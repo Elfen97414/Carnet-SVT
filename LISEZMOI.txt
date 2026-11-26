@@ -1,4 +1,4 @@
-CARNET SVT, VERSION 6 : INSTALLATION ET UTILISATION
+CARNET SVT, VERSION 7 : INSTALLATION ET UTILISATION
 ===================================================
 
 L'application tient dans ce dossier : index.html, sw.js, manifest.webmanifest et 3 icônes.
@@ -26,6 +26,10 @@ chiffrées. L'application est verrouillée techniquement contre tout envoi sur I
      de récupération).
    - Réglages > Compte et sécurité : choisissez un code de 4 à 8 chiffres. Le mot de passe
      est demandé une fois le matin, puis le code suffit jusqu'à minuit.
+   - Niveaux disponibles : 6e, 5e, 4e, 3e générale, 3e prépa-métiers, 6e à 3e SEGPA, et
+     « Autre niveau ». Chacun a sa liste de comportements par défaut, modifiable dans
+     Réglages > Comportements. En 6e et 6e SEGPA, les compétences portent les intitulés du
+     cycle 3.
    - Accueil > « + Nouvelle classe » : nom, niveau et couleur, puis « Importer un fichier Excel
      ou LibreOffice ». Il faut un fichier .xlsx, .ods ou .csv avec une colonne Nom et une colonne
      Prénom. Tous les fichiers du téléphone sont proposés. Depuis Google Sheets, faites
