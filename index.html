@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; font-src 'none'; frame-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1c4a32">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Carnet SVT">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Carnet SVT</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f4f7f2,#0e1611);--card:light-dark(#fff,#17221a);--ink:light-dark(#13201a,#e5eee7);--mut:light-dark(#566659,#9aae9f);--line:light-dark(#d6e0d5,#2a3a2f);--leaf:light-dark(#23704a,#62c08b);--leafbg:light-dark(#e1f0e6,#1b3325);--vig:light-dark(#8f5a0f,#e3ac54);--vigbg:light-dark(#f7ead3,#3a2c14);--info:light-dark(#36607f,#93bad6);--infobg:light-dark(#e2ecf3,#1b2a36);--bad:light-dark(#a3261c,#f08a7e);--badbg:light-dark(#fbe3e0,#3d1a17);--pun:light-dark(#5b4a8b,#b9a8ec);--punbg:light-dark(#ece7fa,#2a2340);--comp:light-dark(#0f6b78,#6fd0dc);--compbg:light-dark(#dff2f4,#14343a);--band:var(--cc,#1c4a32);--cct:#f4f8f5;--hd:"Avenir Next","Segoe UI Variable Display","Segoe UI",Roboto,system-ui,sans-serif}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:color-mix(in srgb,var(--cc,#1c4a32) 13%,var(--bg));color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:clip;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+body.locked{padding-bottom:0;background:var(--bg)}body.locked header,body.locked nav.tabs{display:none}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+header{background:var(--band);color:var(--cct);padding:calc(10px + env(safe-area-inset-top)) max(4vw,14px) 10px;position:sticky;top:0;z-index:5}
+.hrow{display:flex;align-items:center;gap:10px;justify-content:space-between;max-width:1200px;margin:0 auto}
+.hrow.sub{margin-top:4px;flex-wrap:wrap;row-gap:4px}
+h1{font:700 22px/1.1 var(--hd);margin:0}
+.date{font-size:14px;opacity:.85}
+.sync{font-size:13px;padding:4px 11px;border-radius:99px;background:color-mix(in srgb,var(--cct) 16%,transparent);white-space:nowrap}
+.sync.warn{background:#e3ac54;color:#2b1d05}
+.lock{border:1px solid color-mix(in srgb,var(--cct) 40%,transparent);background:none;color:var(--cct);border-radius:99px;min-height:36px;padding:0 12px;font:inherit;font-size:13px}
+.cls{display:flex;gap:8px;overflow-x:auto;margin:8px auto 0;max-width:1200px;scrollbar-width:none}.cls[hidden]{display:none}
+.cls button{flex:none;border:1px solid color-mix(in srgb,var(--cct) 40%,transparent);background:transparent;color:var(--cct);border-radius:99px;padding:7px 15px;font:inherit;font-size:15px;min-height:40px}
+.cls button[aria-pressed=true]{background:var(--cct);color:var(--band);font-weight:700;border-color:var(--cct)}
+main{padding:14px max(3vw,12px);max-width:1200px;margin:0 auto}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav.tabs button{border:0;background:none;color:var(--mut);font:inherit;font-size:13px;padding:7px 4px 9px;min-height:58px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current=page]{color:var(--leaf);font-weight:700}
+@media(orientation:landscape) and (max-height:500px){nav.tabs button{min-height:46px;flex-direction:row;gap:6px;padding:4px}body{padding-bottom:calc(52px + env(safe-area-inset-bottom))}header{position:static}}
+h2{font:700 25px/1.15 var(--hd);margin:0 0 6px;text-wrap:balance}
+h3{font:700 18px/1.2 var(--hd);margin:0 0 10px}
+.tool{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{border:0;background:none;font:inherit;font-size:15px;padding:7px 13px;border-radius:9px;color:var(--mut);min-height:40px}
+.seg button[aria-pressed=true]{background:var(--leaf);color:var(--bg);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+@media(max-width:430px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;min-height:88px;font:inherit;color:inherit;display:flex;flex-direction:column;justify-content:space-between;gap:8px;box-shadow:0 2px 0 var(--line);transition:transform .12s}
+.tile:active{transform:scale(.97)}
+.tile .nm{font-weight:700;font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.tile.abs{opacity:.5}
+.tile.flash{animation:fl .7s ease-out}
+@keyframes fl{0%{box-shadow:0 0 0 0 var(--leaf)}100%{box-shadow:0 0 0 12px transparent}}
+@media(prefers-reduced-motion:reduce){.tile.flash{animation:none}.tile{transition:none}}
+/* plan de classe */
+.planwrap{overflow-x:auto;padding:2px 2px 8px;margin:0 -4px;overscroll-behavior-x:contain}
+.plan{display:grid;gap:8px;min-width:680px}
+@media(max-height:500px){.seat,.pt{min-height:58px}.pt{padding:5px 5px 4px}.plan{gap:5px}.ses{padding:8px 12px}}
+.board{text-align:center;font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--mut);background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:5px;width:60%;margin:0 auto}
+.rang{display:grid;grid-template-columns:26px repeat(6,minmax(0,1fr)) 16px repeat(4,minmax(0,1fr));gap:5px;align-items:stretch}
+.rang.flip{grid-template-columns:26px repeat(4,minmax(0,1fr)) 16px repeat(6,minmax(0,1fr))}
+.rl{font-size:12px;font-weight:700;color:var(--mut);display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;transform:rotate(180deg)}
+.aisle{background:repeating-linear-gradient(180deg,var(--line) 0 6px,transparent 6px 12px);width:2px;justify-self:center;border-radius:2px}
+.seat{min-height:74px;border-radius:12px;display:flex}
+.seat .free{flex:1;border-radius:12px;border:1.5px dashed color-mix(in srgb,var(--mut) 40%,transparent)}
+.seat.ed .free{border-color:var(--mut);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mut)}
+.seat.over .free,.seat.over .pt{outline:3px solid var(--leaf);outline-offset:1px}
+.pt{flex:1;min-height:74px;padding:7px 6px 6px;border-radius:12px;gap:4px;text-align:center;align-items:stretch}
+.pt .nm{font-size:13.5px;line-height:1.15;overflow-wrap:normal;word-break:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;letter-spacing:-.01em}.pt .ini{align-self:center}.pt .ini{font-size:12px;color:var(--mut);font-weight:700}
+.pt .pills{justify-content:center;gap:3px}.pt .pill{font-size:12px;padding:1px 6px}
+.pt.sel{outline:3px solid var(--pun);outline-offset:1px}
+.ed .pt,.tray .pt{touch-action:none;cursor:grab}
+.pt.dragging{opacity:.3}
+.dragghost{position:fixed;left:0;top:0;z-index:50;pointer-events:none;opacity:.92;box-shadow:0 10px 24px rgba(0,0,0,.3);margin:0}
+.tray{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;padding:8px;border:1.5px dashed var(--line);border-radius:12px;min-height:60px}
+.tray .pt{flex:0 0 76px;min-height:64px}
+.hint{font-size:14px;color:var(--mut);margin:0 0 10px}
+@media(min-width:700px){.porthint{display:none}}
+.pills{display:flex;gap:5px;flex-wrap:wrap}
+.pill{font-size:13px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.p1{background:var(--leafbg);color:var(--leaf)}.pv{background:var(--vigbg);color:var(--vig)}.p0{background:var(--infobg);color:var(--info)}.px{background:var(--badbg);color:var(--bad)}.pp{background:var(--punbg);color:var(--pun)}.pc{background:var(--compbg);color:var(--comp)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 13px;font:inherit;font-size:15px;min-height:44px;text-align:left;display:inline-flex;align-items:center;gap:8px}
+.chip i,.dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+.t1 i,.d1{background:var(--leaf)}.tv i,.dv{background:var(--vig)}.t0 i,.d0{background:var(--info)}.tx i,.dx{background:var(--bad)}.tp i,.dp{background:var(--pun)}.tc i,.dc{background:var(--comp)}
+.chip.sug{border-color:var(--pun)}
+.chip[aria-pressed=true]{border-color:var(--leaf);background:var(--leafbg);font-weight:700}
+.fav .chip{font-size:16px;min-height:56px;padding:10px 14px;font-weight:600;flex:1 1 calc(50% - 8px)}
+.burst{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;margin-bottom:6px}.burst .chip{flex:none}
+.sheetbg,.modalbg{position:fixed;inset:0;background:rgba(5,15,10,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.modalbg{z-index:25}
+.sheet{background:var(--bg);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:12px max(4vw,16px) calc(20px + env(safe-area-inset-bottom))}
+@media(min-width:760px){.sheetbg,.modalbg{align-items:center}.sheet{border-radius:20px}}
+.gl{font-size:14px;font-weight:700;color:var(--mut);margin:14px 0 8px}
+details.more>summary,details.memo>summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none}
+details.more>summary{color:var(--leaf);margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+details.memo>summary{color:var(--pun)}
+details>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"▾";font-size:14px}details.more[open]>summary::after{content:"▴"}
+details.memo ul{margin:6px 0 0;padding-left:20px;font-size:14px}details.memo li{margin:4px 0}
+.btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:700;min-height:44px;background:var(--leaf);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.danger{background:transparent;color:var(--bad);border:1.5px solid var(--bad)}
+.btn:disabled{opacity:.5}
+.x{border:0;background:none;color:var(--mut);font-size:24px;line-height:1;min-width:44px;min-height:44px;flex:none}
+input,textarea,select{font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-height:44px}
+input[type=time]{width:auto}
+textarea{min-height:110px;resize:vertical;line-height:1.45}
+label{display:block;font-size:14px;color:var(--mut);margin:12px 0 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nw{flex-wrap:nowrap}.sb{justify-content:space-between}
+.ses{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-left:5px solid var(--line);padding:12px 14px}
+.ses.on{border-left-color:var(--leaf)}
+.ses b{font:700 17px var(--hd)}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list .t{font-size:13px;color:var(--mut);white-space:nowrap;width:3.3em;flex:none}
+.list .g{flex:1;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.list .g .dot{align-self:center}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);border-radius:12px;padding:8px 8px 8px 16px;display:flex;gap:10px;align-items:center;z-index:30;width:max-content;max-width:calc(100% - 24px);font-size:15px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.toast[hidden]{display:none}
+.toast button{background:none;border:0;color:var(--bg);font:inherit;font-weight:700;text-decoration:underline;min-height:40px;padding:0 8px}
+.bars .b{display:grid;grid-template-columns:minmax(0,1fr) 2.4em;gap:4px 10px;align-items:center;margin:10px 0}
+.bars .lab{font-size:15px;display:flex;gap:8px;align-items:center}
+.bars .tr{grid-column:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bars .tr span{display:block;height:100%;border-radius:99px}
+.bars .n{grid-row:1/3;grid-column:2;text-align:right;font:700 20px var(--hd)}
+.cgrp{border-top:1px solid var(--line);padding:10px 0}.cgrp:first-of-type{border-top:0;padding-top:0}
+.cgrp b{display:block;font-size:15px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 5px;border-bottom:1px solid var(--line);text-align:left;font-size:15px}
+th{font-size:13px;color:var(--mut);font-weight:700}
+tr:last-child td{border-bottom:0}
+.r{text-align:right}
+.lnk{background:none;border:0;font:inherit;font-weight:700;color:var(--ink);text-align:left;padding:6px 0;min-height:40px;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.empty{text-align:center;padding:24px 16px 40px;color:var(--mut);max-width:520px;margin:0 auto}
+.empty h2{color:var(--ink)}
+.art{width:min(240px,64vw);height:auto;margin-bottom:10px}
+.kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.kpi b{display:block;font:700 clamp(24px,6vw,32px)/1 var(--hd)}
+.kpi span{font-size:13px;color:var(--mut)}
+.small{font-size:14px;color:var(--mut);margin:6px 0 0}
+.err{color:var(--bad);font-weight:700;min-height:1.5em;margin:10px 0 0}
+.behrow{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.behrow .full{grid-column:2/4}
+.star{border:0;background:none;font-size:24px;line-height:1;min-width:44px;min-height:44px;color:var(--line)}
+.star[aria-pressed=true]{color:#d99a00}
+.pre{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}.pre .chip{flex:none;min-height:40px;padding:7px 12px}
+.auth{max-width:420px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 18px 40px}
+.auth .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+.auth .brand svg{width:52px;height:52px;flex:none}
+.auth .brand b{font:700 24px/1.1 var(--hd)}
+.pin{font-size:28px;letter-spacing:.4em;text-align:center}
+.warnbox{background:var(--vigbg);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:14px;margin:14px 0}
+.banner{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--vigbg);border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:14px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sw{width:44px;height:44px;border-radius:12px;border:3px solid transparent;padding:0}.sw[aria-pressed=true]{border-color:var(--ink)}
+input[type=color]{width:56px;padding:4px;height:44px}
+.cdot{width:16px;height:16px;border-radius:5px;display:inline-block;vertical-align:-2px;margin-right:8px}
+.done{border:1.5px solid var(--line);background:none;color:var(--ink);border-radius:99px;font:inherit;font-size:13px;padding:4px 10px;min-height:36px;white-space:nowrap}
+.done[aria-pressed=true]{background:var(--leafbg);color:var(--leaf);border-color:var(--leaf);font-weight:700}
+.resume{white-space:pre-wrap;font-size:15px;background:var(--bg);border-radius:10px;padding:12px;margin:0 0 10px;font-family:inherit}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .wd{font-size:12px;font-weight:700;color:var(--mut);text-align:center;padding:4px 0}
+.cal button{border:1.5px solid transparent;background:var(--bg);border-radius:10px;min-height:52px;font:inherit;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:5px 2px;gap:4px}
+.cal button.has{background:var(--card);border-color:var(--line);font-weight:700}
+.cal button.today{box-shadow:inset 0 0 0 2px var(--leaf)}
+.cal button[aria-pressed=true]{border-color:var(--ink);background:var(--leafbg)}
+.cal button:disabled{opacity:.35;cursor:default}
+.cal .dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}.cal .dots i{width:8px;height:8px;border-radius:50%;display:block}
+.calhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.calhead b{font:700 19px var(--hd);text-transform:capitalize}
+.chrono{font:700 clamp(30px,8vw,44px)/1 var(--hd);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.hchrono{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;padding:4px 11px;border-radius:99px;background:color-mix(in srgb,var(--cct) 22%,transparent);white-space:nowrap}
+.hchrono[hidden]{display:none}
+.startcard{border-left:5px solid var(--band)}
+.startcard .btn{font-size:17px;min-height:54px;padding:12px 18px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.switch input{width:auto;min-height:0;transform:scale(1.4)}
+</style>
+</head>
+<body class="locked">
+<header>
+  <div class="hrow"><h1 id="ttl">Carnet SVT</h1><button class="lock" data-act="lock" aria-label="Verrouiller l'application">Verrouiller</button></div>
+  <div class="hrow sub"><span class="date" id="today"></span><span class="row nw" style="gap:6px"><span class="hchrono" id="hchrono" data-act="goses" role="timer" aria-label="Temps de séance" hidden></span><span class="sync" id="sync" role="status"></span></span></div>
+  <div class="cls" id="cls" role="group" aria-label="Choisir la classe"></div>
+</header>
+<main id="main"></main>
+<div id="ov"></div>
+<div id="md"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<input type="file" id="fileIn" accept=".carnet,.json,application/json" hidden>
+<input type="file" id="xlIn" accept=".xlsx,.ods,.csv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.oasis.opendocument.spreadsheet,text/csv" hidden>
+<nav class="tabs" aria-label="Sections">
+  <button data-act="view" data-v="seance"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Séance</button>
+  <button data-act="view" data-v="bilan"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg>Bilan</button>
+  <button data-act="view" data-v="classes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.6 3-5.5 6-5.5s5.4 1.9 6 5.5"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14.6c2.4.2 4 1.9 4.5 4.9"/></svg>Classes</button>
+  <button data-act="view" data-v="reglages"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>Réglages</button>
+</nav>
+<script>
+{
+/* ================= outils ================= */
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const ymd=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const hm=t=>new Date(t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const dlong=t=>new Date(t).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+const atTime=(base,v)=>{const[h,m]=String(v||'').split(':').map(Number);const d=new Date(base);if(isNaN(h))return null;d.setHours(h,m||0,0,0);return d.getTime()};
+const yearStart=()=>{const n=new Date();return (n.getMonth()>=7?n.getFullYear():n.getFullYear()-1)+'-08-01'};
+const fmtDur=ms=>{ms=Math.max(0,ms);const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':':'')+String(m).padStart(h?2:1,'0')+':'+String(x).padStart(2,'0')};
+setInterval(()=>{document.querySelectorAll('[data-chrono]').forEach(el=>{const v=fmtDur(Date.now()-(+el.dataset.chrono));el.textContent=el.id==='hchrono'?'⏱ '+v:v})},1000);
+const buzz=()=>{try{if(S&&S.prefs&&S.prefs.vib===false)return;navigator.vibrate&&navigator.vibrate(12)}catch(e){}};
+
+/* ================= référentiels ================= */
+const COMP={dem:'Pratiquer des démarches scientifiques',ccr:'Concevoir, créer, réaliser',out:'Utiliser des outils et mobiliser des méthodes pour apprendre',lang:'Pratiquer des langages',num:'Utiliser des outils numériques',eth:'Adopter un comportement éthique et responsable',esp:'Se situer dans l\'espace et dans le temps'};
+const B=(id,l,v,ap,o)=>Object.assign({id,l,v,ap:ap||'',ax:'att'},o||{});
+const C=(id,l,cp,ap,f)=>({id,l,v:1,ap,ax:'comp',cp,f:!!f});
+const F={f:true};
+const INFO=[B('abs','Absent',0),B('oral','Passage à l\'oral',0),B('aide','Aide individuelle',0)];
+const VIG=(fav)=>[B('bav','Bavardages',-1,'limiter les bavardages',fav.includes('bav')?F:0),B('tnf','Travail non fait',-1,'faire le travail demandé avec régularité',fav.includes('tnf')?F:0),B('mat','Matériel oublié',-1,'penser à apporter son matériel',fav.includes('mat')?F:0),B('ret','Retard',-1,'arriver à l\'heure en cours')];
+const INAP=()=>[B('inso','Insolence',-2,'adopter une attitude plus respectueuse',F),B('refus','Refus de travailler',-2,'s\'engager dans le travail demandé',F),B('perturb','Perturbation du cours',-2,'contribuer au calme de la classe'),B('irresp','Manque de respect envers autrui',-2,'respecter davantage ses camarades et les adultes'),B('propos','Propos ou gestes déplacés',-2,'veiller à son langage et à son attitude'),B('tel','Usage du téléphone',-2,'laisser le téléphone de côté en cours'),B('degr','Dégradation de matériel',-2,'prendre soin du matériel commun'),B('sortie','Sortie sans autorisation',-2,'respecter les règles de la classe')];
+const LV=[{id:'3pm',l:'3e prépa métiers'},{id:'4e',l:'4e'},{id:'5e',l:'5e'},{id:'autre',l:'Autre niveau'}];
+const DEFL=()=>({
+ '5e':[B('part','Participation remarquable',1,'une participation régulière et pertinente',F),B('seri','Travail très sérieux',1,'un travail sérieux et régulier'),B('entr','Entraide',1,'un esprit d\'entraide apprécié'),B('prog','Progrès nets',1,'des progrès encourageants'),
+  C('obs','Observation précise','dem','des observations précises'),C('inv','Démarche d\'investigation','dem','une démarche d\'investigation bien conduite'),C('maq','Modèle ou maquette réussi','ccr','une bonne mise en œuvre des modélisations'),C('doc','Exploitation de documents','lang','une exploitation rigoureuse des documents'),C('sch','Schéma soigné et légendé','lang','des schémas soignés et légendés',true),C('carte','Lecture de cartes','esp','une bonne lecture des cartes'),
+  B('inat','Inattention',-1,'gagner en concentration'),B('cons','Consignes non suivies',-1,'lire et suivre les consignes avec attention'),B('soin','Manque de soin',-1,'apporter plus de soin à ses productions'),...VIG(['bav','mat']),...INAP(),...INFO],
+ '4e':[B('part','Participation remarquable',1,'une participation régulière et pertinente',F),B('auto','Grande autonomie',1,'une belle autonomie dans les activités'),B('grp','Travail de groupe moteur',1,'un rôle moteur dans le travail de groupe'),B('prog','Progrès nets',1,'des progrès encourageants'),
+  C('hyp','Hypothèse pertinente','dem','une bonne capacité à formuler des hypothèses',true),C('prot','Protocole expérimental','ccr','des protocoles expérimentaux bien construits'),C('micro','Microscope maîtrisé','out','une bonne maîtrise du microscope'),C('graph','Lecture de graphiques','lang','une lecture rigoureuse des graphiques'),C('voc','Vocabulaire scientifique','lang','un vocabulaire scientifique précis'),C('numq','Outil numérique maîtrisé','num','une bonne utilisation des outils numériques'),
+  B('inat','Inattention',-1,'gagner en concentration'),B('secu','Sécurité en TP',-1,'respecter les règles de sécurité en TP'),B('hors','Hors tâche',-1,'s\'engager davantage dans les activités'),...VIG(['bav','tnf']),...INAP(),...INFO],
+ '3pm':[B('impl','Implication remarquable',1,'une implication constante dans les activités',F),B('equi','Travail en équipe',1,'un bon esprit d\'équipe'),B('pers','Persévérance',1,'de la persévérance face aux difficultés'),B('metier','Lien avec un métier',1,'une capacité à relier les notions au monde professionnel'),B('prog','Progrès nets',1,'des progrès encourageants'),
+  C('probl','Question scientifique formulée','dem','une bonne capacité à questionner'),C('real','Réalisation soignée','ccr','des réalisations soignées'),C('doc','Exploitation de documents','lang','une bonne exploitation des documents'),C('parole','Explication orale claire','lang','des explications orales claires',true),C('resp','Attitude éco-responsable','eth','une attitude responsable vis-à-vis de l\'environnement'),
+  B('peuimpl','Manque d\'implication',-1,'s\'impliquer davantage dans les activités',F),B('post','Posture de travail',-1,'adopter une posture de travail plus constante',F),...VIG([]),...INAP(),...INFO,B('ratt','Travail rattrapé',0)],
+ 'autre':[B('part','Participation remarquable',1,'une participation régulière et pertinente',F),B('seri','Travail très sérieux',1,'un travail sérieux en classe'),B('entr','Entraide',1,'un esprit d\'entraide apprécié'),B('prog','Progrès nets',1,'des progrès encourageants'),
+  C('dema','Démarche scientifique','dem','une bonne maîtrise de la démarche scientifique',true),C('comm','Communication scientifique','lang','une communication scientifique claire'),C('meth','Méthode de travail','out','une méthode de travail efficace'),
+  B('inat','Inattention',-1,'gagner en concentration'),B('hors','Hors tâche',-1,'s\'engager davantage dans les activités'),...VIG(['bav','mat']),...INAP(),...INFO]});
+const DEFLISTS=DEFL();
+const PU={inso:['excuse','carnet','rapport'],refus:['devsup','retenue','carnet'],perturb:['place','carnet','excuse'],irresp:['excuse','carnet','rapport'],propos:['excuse','rapport','carnet'],tel:['confisc','carnet'],degr:['rapport','carnet'],sortie:['carnet','rapport'],tnf:['retenue','devsup'],bav:['place','carnet'],mat:['carnet'],ret:['carnet'],secu:['place','carnet']};
+const PUNDEF=[{id:'carnet',l:'Mot dans le carnet de correspondance'},{id:'excuse',l:'Excuse orale ou écrite'},{id:'devsup',l:'Devoir supplémentaire'},{id:'retenue',l:'Retenue pour faire un travail'},{id:'place',l:'Changement de place'},{id:'confisc',l:'Téléphone confisqué (selon le règlement)'},{id:'famille',l:'Contact avec la famille'},{id:'rapport',l:'Rapport d\'incident (CPE, direction)'},{id:'excl',l:'Exclusion ponctuelle de cours'}];
+const MEMO=['Seules les punitions prévues par le règlement intérieur de l\'établissement peuvent être données : adaptez la liste dans Réglages.','Toute punition est portée par écrit à la connaissance des parents (bouton « Mot aux familles »).','Une punition est individuelle et proportionnée ; les punitions collectives sont interdites.','Un devoir supplémentaire doit être corrigé par la personne qui l\'a donné.','Un zéro pour un motif uniquement disciplinaire est interdit.','Exclusion de cours : très exceptionnelle, avec prise en charge encadrée de l\'élève, un travail en lien avec la matière, et information écrite du CPE et de la direction.','Avertissement, blâme, mesure de responsabilisation et exclusions sont des sanctions disciplinaires : elles relèvent du chef d\'établissement ou du conseil de discipline. L\'enseignant fait un rapport, sans pouvoir exiger une sanction précise.'];
+const PALETTE=['#1c4a32','#1f4e79','#6b2d5c','#8a3b12','#2f5d62','#5b4a8b','#7a5c00','#8b1e3f','#3d3d3d'];
+const TYP={'1':'Point fort remarquable','c':'Compétence SVT','-1':'À accompagner','-2':'Comportement inapproprié','0':'Information'};
+const lvName=id=>(LV.find(x=>x.id===id)||LV[3]).l;
+const NSEAT=30;
+
+/* ================= chiffrement + stockage sur l'appareil ================= */
+const te=new TextEncoder(),td=new TextDecoder(),ITER=250000;
+const b64=u=>{const a=new Uint8Array(u);let s='';for(let i=0;i<a.length;i+=32768)s+=String.fromCharCode.apply(null,a.subarray(i,i+32768));return btoa(s)};
+const ub64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function pbk(secret,salt,iter,extractable){const km=await crypto.subtle.importKey('raw',te.encode(secret),'PBKDF2',false,['deriveKey']);
+ return crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt,iterations:iter},km,{name:'AES-GCM',length:256},extractable,['encrypt','decrypt'])}
+const derive=(id,pw,salt,iter)=>pbk(id.trim().toLowerCase()+'\u0000'+pw,salt,iter,true);
+async function enc(key,bytes){const iv=crypto.getRandomValues(new Uint8Array(12));return{iv:b64(iv),ct:b64(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,bytes))}}
+const dec=(key,o)=>crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(o.iv)},key,ub64(o.ct));
+async function seal(k,obj){const e=await enc(k.key,te.encode(JSON.stringify(obj)));return{app:'carnet-svt',v:1,salt:b64(k.salt),iter:k.iter,...e,saved:Date.now()}}
+async function openWith(rec,key){return JSON.parse(td.decode(await dec(key,rec)))}
+async function unseal(rec,id,pw){const salt=ub64(rec.salt),key=await derive(id,pw,salt,rec.iter);const data=await openWith(rec,key);return{k:{key,salt,iter:rec.iter},data}}
+const idb=(()=>{let p;const o=()=>p||(p=new Promise((res,rej)=>{const r=indexedDB.open('carnet-svt',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
+ const tx=(m,f)=>o().then(d=>new Promise((res,rej)=>{const t=d.transaction('kv',m),q=f(t.objectStore('kv'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)}));
+ return{get:k=>tx('readonly',s=>s.get(k)),set:(k,v)=>tx('readwrite',s=>{s.put(v,k)}),del:k=>tx('readwrite',s=>{s.delete(k)})}})();
+/* code du jour : la clé du carnet est chiffrée avec le code, valable jusqu'à minuit, effacée après 5 erreurs */
+async function wrapPin(pin){if(!K||!/^\d{4,8}$/.test(pin||''))return;const raw=await crypto.subtle.exportKey('raw',K.key),salt=crypto.getRandomValues(new Uint8Array(16)),pk=await pbk('pin\u0000'+pin,salt,300000,false);
+ await idb.set('pin',{day:ymd(Date.now()),salt:b64(salt),fails:0,...await enc(pk,raw)})}
+async function pinValid(){try{const r=await idb.get('pin');if(r&&r.day===ymd(Date.now()))return r;if(r)await idb.del('pin')}catch(e){}return null}
+
+let K=null,S=null,REC=null,META={},fileH=null,fileOK=false,saveT=null,saving=false,again=false,fails=0,waitUntil=0,pendingImport=null,suppress=false;
+const ui={auth:'loading',view:'seance',cur:null,mode:'eleve',layout:'plan',editPlan:false,pick:null,burst:null,stu:null,ses:null,from:'',to:'',edit:null,confirm:false,sheet:null,sheetSe:null,more:false,flash:null,behEdit:null,behLv:'5e',punEdit:null,undo:null,wipe:false,err:'',modal:null,yearStep:0,bview:'classe',calM:null,calD:null,fromCal:false};
+const blank=()=>({classes:[],sessions:[],logs:[],notes:{},lists:{},pun:null,prefs:{}});
+function save(){clearTimeout(saveT);saveT=setTimeout(doSave,250)}
+async function doSave(){if(!K||!S)return;if(saving){again=true;return}saving=true;
+ try{Object.assign(S.prefs,{cur:ui.cur,mode:ui.mode,from:ui.from,to:ui.to,layout:ui.layout});REC=await seal(K,S);await idb.set('vault',REC);META.saved=REC.saved;
+  if(fileH&&fileOK){try{const w=await fileH.createWritable();await w.write(JSON.stringify(REC));await w.close();META.lastFile=Date.now()}catch(e){fileOK=false}}
+  await idb.set('meta',META)}
+ catch(e){toast('Enregistrement impossible sur cet appareil.')}
+ finally{saving=false;saveT=null;pill();if(again){again=false;doSave()}}}
+async function lock(){if(S){clearTimeout(saveT);await doSave()}K=null;S=null;ui.sheet=null;ui.modal=null;ui.err='';$('#toast').hidden=true;
+ ui.auth=(await pinValid())?'pin':'login';render(true)}
+let lastAct=Date.now();
+['pointerdown','keydown'].forEach(e=>addEventListener(e,()=>lastAct=Date.now(),{passive:true}));
+setInterval(()=>{if(S&&Date.now()-lastAct>60*60e3)lock()},30e3);
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(S){clearTimeout(saveT);doSave()}}else if(S&&Date.now()-lastAct>60*60e3)lock()});
+addEventListener('pagehide',()=>{if(S){clearTimeout(saveT);doSave()}});
+
+/* ================= données ================= */
+const curClass=()=>S.classes.find(x=>x.id===ui.cur)||S.classes[0]||null;
+const beh=lv=>S.lists[lv]||DEFLISTS[lv]||DEFLISTS.autre;
+const bmap=lv=>Object.fromEntries(beh(lv).map(b=>[b.id,b]));
+const punList=()=>S.pun&&S.pun.length?S.pun:PUNDEF;
+const punL=id=>(punList().find(x=>x.id===id)||PUNDEF.find(x=>x.id===id)||{}).l||'Punition';
+const bl=(id,lv)=>id==='note'?'Note':id==='pun'?'Punition':(bmap(lv)[id]||{}).l||'Observation retirée';
+const bv=(id,lv)=>id==='note'||id==='pun'?null:(bmap(lv)[id]||{}).v;
+const isComp=(id,lv)=>(bmap(lv)[id]||{}).ax==='comp';
+const kind=(id,lv)=>id==='pun'?'p':id==='note'?'0':isComp(id,lv)?'c':({1:'1','-1':'v','-2':'x',0:'0'})[bv(id,lv)]||'0';
+const dot=(id,lv)=>`<span class="dot d${kind(id,lv)}"></span>`;
+const elabel=(e,lv)=>e.b==='pun'?'Punition : '+punL(e.p):bl(e.b,lv);
+const cntK=(l,k,lv)=>l.filter(e=>kind(e.b,lv)===k).length;
+function inPeriod(t){const d=ymd(t);return(!ui.from||d>=ui.from)&&(!ui.to||d<=ui.to)}
+function active(c){const s=S.sessions.find(x=>x.c===c.id&&!x.end);if(!s)return null;
+ if(Date.now()-s.start>5*3600e3){const l=S.logs.filter(e=>e.se===s.id);s.end=l.length?Math.max(...l.map(e=>e.t)):s.start+55*60e3;save();return null}return s}
+function startSes(c,start){const a=active(c);if(a)a.end=Date.now();const s={id:uid(),c:c.id,start:start||Date.now()};S.sessions.push(s);save();return s}
+const ctxSes=c=>ui.sheetSe?S.sessions.find(x=>x.id===ui.sheetSe):active(c);
+function addEntry(sid,b,note,extra){const c=curClass();if(!c)return null;let se=ui.sheet&&ui.sheetSe?S.sessions.find(x=>x.id===ui.sheetSe):null;if(!se)se=active(c)||startSes(c);
+ let t=Date.now();const tin=ui.sheet&&$('#obsT');if(tin&&tin.value&&(ui.sheetSe||tin.value!==hhmm(t))){const x=atTime(se.start,tin.value);if(x)t=x}
+ const e={id:uid(),c:c.id,s:sid,b,t,se:se.id,...(extra||{})};if(note)e.n=note;S.logs.push(e);save();buzz();return e.id}
+function removeEntry(id){S.logs=S.logs.filter(e=>e.id!==id);save()}
+const stuOf=(c,sid)=>c&&c.students.find(x=>x.id===sid);
+const sName=sid=>{const s=stuOf(curClass(),sid);return s?s.n:''};
+const sesRange=s=>hm(s.start)+(s.end?' – '+hm(s.end):' – en cours');
+const short=n=>{const p=String(n).trim().split(/\s+/);return p.length>1?[p[0],p.slice(1).map(x=>x[0]||'').join('').toUpperCase()+'.']:[p[0]||'','']};
+/* plan de classe : 3 rangs de 6 places + couloir + 4 places */
+function seatMap(c){const a=Array(NSEAT).fill(null),ss=c.seats||{};for(const s of c.students){const i=ss[s.id];if(Number.isInteger(i)&&i>=0&&i<NSEAT&&!a[i])a[i]=s.id}return a}
+function autoSeat(c,reset){if(reset)c.seats={};c.seats=c.seats||{};const a=seatMap(c),ids=new Set(c.students.map(s=>s.id));
+ for(const k of Object.keys(c.seats)){if(!ids.has(k)||(c.seats[k]>=0&&a[c.seats[k]]!==k))delete c.seats[k]}
+ for(const s of c.students){if(s.id in c.seats)continue;const f=a.indexOf(null);if(f<0){c.seats[s.id]=-1;continue}a[f]=s.id;c.seats[s.id]=f}}
+function moveSeat(c,sid,target){if(!c)return;const a=seatMap(c),from=c.seats[sid],occ=target>=0?a[target]:null;if(occ===sid)return;
+ if(occ)c.seats[occ]=Number.isInteger(from)&&from>=0?from:-1;c.seats[sid]=target;save()}
+
+/* ================= rendu ================= */
+const LOGO=`<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1c4a32"/><rect x="14" y="13" width="32" height="40" rx="5" fill="#eef6f0"/><rect x="14" y="13" width="7" height="40" rx="3" fill="#bfe0cb"/><path d="M27 23h13M27 30h13M27 37h8" stroke="#1c4a32" stroke-width="2.6" stroke-linecap="round"/><path d="M40 52c9-2 14-10 12-21-9 1-15 8-14 17" fill="#62c08b"/><path d="M40 51c3-6 6-11 11-17" stroke="#1c4a32" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+const ART=`<svg class="art" viewBox="0 0 260 170" aria-hidden="true"><rect x="40" y="22" width="180" height="132" rx="10" fill="var(--card)" stroke="var(--line)" stroke-width="2"/><rect x="40" y="22" width="22" height="132" rx="10" fill="var(--leafbg)"/>${[0,1,2,3].map(r=>[0,1,2].map(k=>`<rect x="${78+k*46}" y="${38+r*28}" width="38" height="20" rx="5" fill="${(r+k)%3===0?'var(--leafbg)':(r*k)%4===1?'var(--vigbg)':'var(--bg)'}" stroke="var(--line)"/>`).join('')).join('')}<path d="M198 150c30-6 46-34 40-70-30 4-52 26-48 58" fill="var(--leaf)"/><path d="M196 146c10-20 22-36 38-58" stroke="var(--card)" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`;
+let rq=0,pend=false;
+function sched(force){if(force){render(true);return}if(!rq)rq=requestAnimationFrame(()=>{rq=0;render()})}
+function chip(b,act,pressed,cls){return `<button class="chip t${b.ax==='comp'?'c':({1:'1','-1':'v','-2':'x',0:'0'})[b.v]}${cls||''}" data-act="${act}" data-b="${esc(b.id)}"${pressed!=null?` aria-pressed="${pressed}"`:''}><i></i>${esc(b.l)}</button>`}
+function setColor(c){const col=(c&&/^#[0-9a-f]{6}$/i.test(c.col||''))?c.col:'#1c4a32',r=parseInt(col.slice(1,3),16),g=parseInt(col.slice(3,5),16),b=parseInt(col.slice(5,7),16),L=(0.299*r+0.587*g+0.114*b)/255;
+ const st=document.documentElement.style;st.setProperty('--cc',col);st.setProperty('--cct',L>0.6?'#13201a':'#f4f8f5');const m=document.querySelector('meta[name=theme-color]');if(m)m.content=col}
+function render(force){
+ document.body.classList.toggle('locked',ui.auth!=='app');
+ const m=$('#main');
+ if(ui.auth!=='app'){$('#ov').innerHTML='';$('#md').innerHTML='';setColor(null);m.innerHTML=vAuth();const f=$('#pinIn')||$('#aid');if(f&&!('ontouchstart' in window))f.focus();return}
+ const c=curClass();if(c&&ui.cur!==c.id)ui.cur=c.id;head(c);sheet();modal();
+ const a=document.activeElement;
+ if(!force&&a&&m.contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)){pend=true;return}
+ pend=false;const keep={},sx=$('.planwrap')?$('.planwrap').scrollLeft:0;m.querySelectorAll('[data-keep]').forEach(el=>keep[el.id]=el.value);
+ m.innerHTML=ui.view==='bilan'?vBilan(c):ui.view==='classes'?vClasses():ui.view==='reglages'?vReglages():vSeance(c);
+ for(const id in keep){const el=document.getElementById(id);if(el&&el.dataset.keep!=null)el.value=keep[id]}
+ if($('.planwrap'))$('.planwrap').scrollLeft=sx;
+ const sel=m.querySelector('.burst [aria-pressed=true]');if(sel){const r=sel.parentElement;r.scrollLeft=sel.offsetLeft-r.offsetLeft-12}}
+document.addEventListener('focusout',()=>{if(pend)setTimeout(()=>sched(),0)});
+function pill(){const el=$('#sync');if(!el||!S)return;const days=META.lastFile?Math.floor((Date.now()-META.lastFile)/864e5):null;
+ let t=saveT||saving?'Enregistrement…':'Enregistré',w=false;if(days===null||days>=7){t=days===null?'Pas encore sauvegardé':'Sauvegarde il y a '+days+' j';w=true}
+ el.textContent=t;el.classList.toggle('warn',w)}
+function head(c){setColor(c);
+ $('#ttl').textContent=c?c.name:'Carnet SVT';
+ $('#today').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})+(c?' · '+lvName(c.lv):'');
+ const box=$('#cls');box.hidden=S.classes.length<2;
+ box.innerHTML=S.classes.map(x=>`<button data-act="cls" data-id="${esc(x.id)}" aria-pressed="${!!c&&x.id===c.id}">${esc(x.name)}</button>`).join('');
+ document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.v===ui.view?'page':'false'));pill();
+ const ha=c&&active(c),hc=$('#hchrono');hc.hidden=!ha;if(ha){hc.dataset.chrono=ha.start;hc.textContent='⏱ '+fmtDur(Date.now()-ha.start)}}
+
+function vAuth(){
+ const brand=`<div class="brand">${LOGO}<b>Carnet SVT</b></div>`;
+ if(ui.auth==='loading')return `<div class="auth">${brand}<p class="small">Ouverture…</p></div>`;
+ const imp=pendingImport?`<div class="warnbox">Sauvegarde du ${esc(new Date(pendingImport.saved||Date.now()).toLocaleString('fr-FR'))} sélectionnée : saisissez l'identifiant et le mot de passe avec lesquels elle a été créée.</div>`:'';
+ if(ui.auth==='pin')return `<div class="auth">${brand}<h2>Code du jour</h2><p class="small">Le code est valable jusqu'à minuit. Après 5 erreurs, le mot de passe est demandé.</p>
+ <form id="fpin"><label for="pinIn">Code</label><input id="pinIn" class="pin" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="8" required>
+ <p class="err" id="aerr" role="alert">${esc(ui.err)}</p><button class="btn" style="width:100%" type="submit">Déverrouiller</button></form>
+ <div class="row" style="margin-top:16px"><button class="btn ghost" data-act="usepw">Utiliser le mot de passe</button></div></div>`;
+ if(ui.auth==='setup')return `<div class="auth">${brand}
+ <h2>Créer votre accès</h2><p class="small">Vos observations restent sur ce téléphone, chiffrées avec votre mot de passe. Rien n'est envoyé sur Internet.</p>${imp}
+ <form id="fauth" autocomplete="on"><label for="aid">Identifiant</label><input id="aid" autocomplete="username" autocapitalize="none" required>
+ <label for="apw">Mot de passe (8 caractères minimum)</label><input id="apw" type="password" autocomplete="${pendingImport?'current-password':'new-password'}" required minlength="8">
+ ${pendingImport?'':'<label for="apw2">Confirmer le mot de passe</label><input id="apw2" type="password" autocomplete="new-password" required>'}
+ <p class="err" id="aerr" role="alert">${esc(ui.err)}</p>
+ <button class="btn" style="width:100%" type="submit">${pendingImport?'Restaurer la sauvegarde':'Créer mon accès'}</button></form>
+ <div class="warnbox">Aucun moyen de retrouver un mot de passe oublié : notez-le en lieu sûr et enregistrez régulièrement une sauvegarde dans un fichier.</div>
+ <div class="row">${pendingImport?'<button class="btn ghost" data-act="impcancel">Annuler la restauration</button>':'<button class="btn ghost" data-act="imppick">Restaurer une sauvegarde</button>'}</div></div>`;
+ return `<div class="auth">${brand}<h2>${pendingImport?'Restaurer une sauvegarde':'Déverrouiller'}</h2>${imp}
+ <form id="fauth" autocomplete="on"><label for="aid">Identifiant</label><input id="aid" autocomplete="username" autocapitalize="none" required>
+ <label for="apw">Mot de passe</label><input id="apw" type="password" autocomplete="current-password" required>
+ <p class="err" id="aerr" role="alert">${esc(ui.err)}</p><button class="btn" style="width:100%" type="submit">${pendingImport?'Restaurer et ouvrir':'Ouvrir mon carnet'}</button></form>
+ <div class="row" style="margin-top:18px">${pendingImport?'<button class="btn ghost" data-act="impcancel">Annuler la restauration</button>':'<button class="btn ghost" data-act="imppick">Restaurer une sauvegarde</button>'}<button class="btn danger" data-act="wipe">${ui.wipe?'Confirmer : tout effacer':'Tout effacer'}</button></div>
+ ${ui.wipe?'<p class="small">Toutes les données de ce téléphone seront supprimées définitivement. Les fichiers de sauvegarde déjà enregistrés ne sont pas touchés.</p>':''}</div>`}
+
+const noClass=()=>`<div class="empty">${ART}<h2>Votre carnet de classe</h2><p>Créez une classe et importez la liste de vos élèves : vous pourrez ensuite noter les comportements observés d'un simple toucher pendant le cours.</p><button class="btn" data-act="newcls">Créer ma première classe</button></div>`;
+function counts(l,lv){return{p:cntK(l,'1',lv),c:cntK(l,'c',lv),v:cntK(l,'v',lv),x:cntK(l,'x',lv),pu:l.filter(e=>e.b==='pun').length,n:l.filter(e=>e.b==='note').length,abs:l.some(e=>e.b==='abs')}}
+function pillsHtml(k){return `${k.p?`<span class="pill p1">+${k.p}</span>`:''}${k.c?`<span class="pill pc">${k.c}</span>`:''}${k.v?`<span class="pill pv">${k.v}</span>`:''}${k.x?`<span class="pill px">${k.x}</span>`:''}${k.pu?'<span class="pill pp">P</span>':''}${k.n?'<span class="pill p0">N</span>':''}`}
+function ptile(c,sid,by){const s=stuOf(c,sid);if(!s)return '';const k=counts(by[sid]||[],c.lv),[fn,ini]=short(s.n),ed=ui.editPlan;
+ return `<button class="tile pt${k.abs?' abs':''}${ui.flash===sid?' flash':''}${ui.pick===sid?' sel':''}" data-act="${ed?'pick':'tile'}" data-s="${esc(sid)}" aria-label="${esc(s.n)}"><span class="nm">${esc(fn)}</span><span class="pills"><span class="ini">${esc(ini)}</span>${k.abs?'<span class="pill p0">Abs.</span>':pillsHtml(k)}</span></button>`}
+function planHtml(c,by){
+ const a=seatMap(c),flip=!!c.flip,ed=ui.editPlan;
+ const rows=[0,1,2].map(r=>{let idx=[...Array(10).keys()].map(k=>r*10+k);if(flip)idx.reverse();
+  const cells=idx.map(i=>`<div class="seat${ed?' ed':''}"${ed?` data-act="seat"`:''} data-seat="${i}">${a[i]?ptile(c,a[i],by):`<span class="free">${ed?'libre':''}</span>`}</div>`);
+  cells.splice(flip?4:6,0,'<div class="aisle" aria-hidden="true"></div>');
+  return `<div class="rang${flip?' flip':''}"><span class="rl">Rang ${r+1}</span>${cells.join('')}</div>`});
+ if(flip)rows.reverse();
+ const board=`<div class="board">Tableau${flip?' · vue depuis le bureau':''}</div>`;
+ const tray=c.students.filter(s=>!(c.seats&&c.seats[s.id]>=0));
+ return `<div class="planwrap"><div class="plan">${flip?'':board}${rows.join('')}${flip?board:''}</div></div>
+ ${tray.length||ed?`<div class="tray${ed?' ed':''}"${ed?' data-act="seat"':''} data-seat="-1"><span class="small" style="margin:0 6px 0 2px">Hors plan${tray.length?' ('+tray.length+')':''}</span>${tray.map(s=>ptile(c,s.id,by)).join('')}</div>`:''}`}
+function vSeance(c){
+ if(!c)return noClass();const st=c.students;
+ if(!st.length)return `<div class="empty">${ART}<h2>Aucun élève en ${esc(c.name)}</h2><p>Ajoutez la liste des élèves pour commencer le suivi.</p><button class="btn" data-act="editcls" data-id="${esc(c.id)}">Ajouter des élèves</button></div>`;
+ const a=active(c),es=a?S.logs.filter(e=>e.se===a.id):[],by={};es.forEach(e=>(by[e.s]=by[e.s]||[]).push(e));
+ const days=META.lastFile?Math.floor((Date.now()-META.lastFile)/864e5):null;
+ const ban=(days===null||days>=7)&&S.logs.length?`<div class="banner"><span>${days===null?'Aucune sauvegarde dans un fichier pour l\'instant.':'Dernière sauvegarde dans un fichier il y a '+days+' jours.'}</span><button class="btn ghost" data-act="backup">Sauvegarder</button></div>`:'';
+ const old=S.logs.some(e=>ymd(e.t)<yearStart())?`<div class="banner"><span>Des observations de l'année scolaire précédente sont encore enregistrées.</span><button class="btn ghost" data-act="view" data-v="reglages">Voir</button></div>`:'';
+ const colOf=x=>/^#[0-9a-f]{6}$/i.test(x.col||'')?x.col:'#1c4a32';
+ const other=!a&&S.classes.map(x=>[x,S.sessions.find(y=>y.c===x.id&&!y.end)]).find(([x,s])=>s&&x.id!==c.id&&Date.now()-s.start<5*3600e3);
+ const sesCard=a?`<div class="card ses on"><div><b>Séance en cours · ${esc(c.name)}</b><div class="small" style="margin:0">Débutée à ${hm(a.start)} · ${es.length} observation${es.length>1?'s':''}</div></div><div class="chrono" data-chrono="${a.start}" role="timer" aria-label="Temps écoulé">${fmtDur(Date.now()-a.start)}</div><button class="btn" data-act="endses">Terminer la séance</button></div>`
+  :`${other?`<div class="banner"><span>Une séance est en cours avec la classe ${esc(other[0].name)} (depuis ${hm(other[1].start)}).</span><button class="btn ghost" data-act="cls" data-id="${esc(other[0].id)}">Y revenir</button></div>`:''}<div class="card startcard"><b style="font:700 18px var(--hd)">Démarrer une séance</b>
+  ${S.classes.length>1?`<div class="chips" style="margin:10px 0 4px">${S.classes.map(x=>`<button class="chip" data-act="pickcls" data-id="${esc(x.id)}" aria-pressed="${x.id===c.id}"><span class="cdot" style="background:${colOf(x)};margin-right:0"></span>${esc(x.name)}</button>`).join('')}</div>`:''}
+  <div class="row" style="margin-top:10px"><button class="btn" data-act="startses">Démarrer la séance avec la classe ${esc(c.name)}</button><label class="row nw small" style="margin:0">Début <input type="time" id="sest" data-keep value="${hhmm(Date.now())}" aria-label="Heure de début"></label></div>
+  <p class="small">Le chronomètre se lance au démarrage. Sans démarrage, la séance commence seule à la première observation.</p></div>`;
+ if(ui.editPlan)return `<div class="tool"><h2 style="margin:0">Modifier le plan</h2><button class="btn" data-act="planDone">Terminer</button></div>
+  <p class="hint">Faites glisser une étiquette vers une place (les deux élèves sont échangés si la place est prise), ou touchez une étiquette puis une place.</p>
+  <div class="row" style="margin-bottom:12px"><button class="btn ghost" data-act="flip">${c.flip?'Afficher le tableau en haut':'Vue depuis le bureau'}</button><button class="btn ghost" data-act="planReset">Replacer dans l'ordre de la liste</button></div>
+  ${planHtml(c,by)}`;
+ const favs=beh(c.lv).filter(b=>b.f),rest=beh(c.lv).filter(b=>!b.f);
+ const view=ui.layout==='plan'?`<p class="hint porthint">Tournez le téléphone à l'horizontale pour voir toute la salle.</p>${planHtml(c,by)}`
+  :`<div class="grid">${st.map(s=>{const k=counts(by[s.id]||[],c.lv);return `<button class="tile${k.abs?' abs':''}${ui.flash===s.id?' flash':''}" data-act="tile" data-s="${esc(s.id)}"><span class="nm">${esc(s.n)}</span><span class="pills">${pillsHtml(k)}</span></button>`}).join('')}</div>`;
+ return `${ban}${old}${sesCard}<div class="tool"><div class="seg" role="group" aria-label="Mode de saisie"><button data-act="mode" data-m="eleve" aria-pressed="${ui.mode==='eleve'}">Par élève</button><button data-act="mode" data-m="rafale" aria-pressed="${ui.mode==='rafale'}">Rafale</button></div>
+ <div class="row"><div class="seg" role="group" aria-label="Affichage"><button data-act="layout" data-l="plan" aria-pressed="${ui.layout==='plan'}">Plan</button><button data-act="layout" data-l="liste" aria-pressed="${ui.layout==='liste'}">Liste</button></div>${ui.layout==='plan'?'<button class="btn ghost" data-act="planEdit">Modifier le plan</button>':''}</div></div>
+ ${ui.mode==='rafale'?`<div class="chips burst">${[...favs,...rest].map(b=>chip(b,'burst',ui.burst===b.id)).join('')}</div><p class="hint">${ui.burst?'Touchez chaque élève concerné par « '+esc(bl(ui.burst,c.lv))+' ».':'Choisissez un comportement, puis touchez les élèves concernés.'}</p>`:''}
+ ${view}`}
+
+function entryLi(e,lv){return `<li><span class="t">${hm(e.t)}</span><span class="g">${dot(e.b,lv)}<span>${esc(elabel(e,lv))}</span>${e.n?`<span class="small" style="margin:0">${esc(e.n)}</span>`:''}${e.b==='pun'?`<button class="done" data-act="pundone" data-id="${esc(e.id)}" aria-pressed="${!!e.done}">${e.done?'Faite':'À vérifier'}</button><button class="done" data-act="mot" data-id="${esc(e.id)}">Mot aux familles</button>`:''}</span><button class="x" data-act="del" data-id="${esc(e.id)}" aria-label="Retirer cette observation">×</button></li>`}
+function sheet(){
+ const ov=$('#ov');if(!ui.sheet){ov.innerHTML='';return}
+ const c=curClass(),s=stuOf(c,ui.sheet);if(!s){ui.sheet=null;ov.innerHTML='';return}
+ const old=$('#note'),keep=old?old.value:'',foc=document.activeElement===old,sc=$('.sheet')?$('.sheet').scrollTop:0,ot=$('#obsT')?$('#obsT').value:'';
+ const se=ctxSes(c),l=se?S.logs.filter(e=>e.se===se.id&&e.s===s.id).reverse():[],lv=c.lv,all=beh(lv),favs=all.filter(b=>b.f);
+ const sug=[...new Set(l.flatMap(e=>PU[e.b]||[]))],pl=[...punList()].sort((a,b)=>(sug.includes(b.id)?1:0)-(sug.includes(a.id)?1:0));
+ const grp=(t,list,hint)=>list.length?`<p class="gl">${t}</p>${hint||''}<div class="chips">${list.map(b=>chip(b,'log')).join('')}</div>`:'';
+ const comps=Object.keys(COMP).map(k=>[k,all.filter(b=>b.ax==='comp'&&b.cp===k)]).filter(x=>x[1].length);
+ const tdef=ui.sheetSe&&se?hhmm(se.end||se.start):hhmm(Date.now());
+ ov.innerHTML=`<div class="sheetbg" data-act="bg"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">
+ <div class="row nw sb"><h2 id="shT" style="margin:0">${esc(s.n)}</h2><div class="row nw"><input type="time" id="obsT" value="${ot||tdef}" aria-label="Heure de l'observation" title="Heure de l'observation"><button class="x" data-act="close" aria-label="Fermer">×</button></div></div>
+ ${ui.sheetSe&&se?`<p class="small" style="margin:0 0 6px">Ajout après coup · séance du ${esc(dlong(se.start))}, ${sesRange(se)}</p>`:''}
+ ${l.length?`<ul class="list">${l.map(e=>entryLi(e,lv)).join('')}</ul>`:''}
+ <p class="gl">Favoris</p><div class="chips fav">${favs.map(b=>chip(b,'log')).join('')||'<span class="small">Choisissez vos favoris dans Réglages (étoile).</span>'}</div>
+ <details class="more"${ui.more?' open':''}><summary data-act="moreToggle">Tous les comportements, punitions et note</summary>
+ ${grp('Points forts remarquables',all.filter(b=>b.v===1&&b.ax!=='comp'),'<p class="small" style="margin:-4px 0 8px">Uniquement pour un fait nettement remarquable : l\'absence de point fort ne pénalise pas l\'élève.</p>')}
+ ${comps.length?`<p class="gl">Compétences SVT (réussite observée)</p>${comps.map(([k,list])=>`<p class="small" style="margin:6px 0 6px">${esc(COMP[k])}</p><div class="chips">${list.map(b=>chip(b,'log')).join('')}</div>`).join('')}`:''}
+ ${grp('À accompagner',all.filter(b=>b.v===-1))}${grp('Comportements inappropriés',all.filter(b=>b.v===-2))}${grp('Informations',all.filter(b=>b.v===0))}
+ <p class="gl">Punition donnée${sug.length?' (suggestions en premier)':''}</p><div class="chips">${pl.map(x=>`<button class="chip tp${sug.includes(x.id)?' sug':''}" data-act="pun" data-p="${esc(x.id)}"><i></i>${esc(x.l)}</button>`).join('')}</div>
+ <details class="memo"><summary>Aide-mémoire réglementaire</summary><ul>${MEMO.map(m=>`<li>${esc(m)}</li>`).join('')}</ul></details>
+ <label for="note">Note libre</label><div class="row nw"><input id="note" autocomplete="off" placeholder="Ex. a proposé un protocole précis"><button class="btn" data-act="note">Noter</button></div>
+ <p class="small">Faits observables uniquement : pas d'information de santé, familiale ou personnelle.</p>
+ <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="fiche" data-s="${esc(s.id)}">Voir son bilan</button></div></details></div></div>`;
+ const n=$('#note');n.value=keep;if(foc)n.focus();$('.sheet').scrollTop=sc}
+function modal(){const md=$('#md');if(!ui.modal){md.innerHTML='';return}
+ if(ui.modal.k==='mot'){const keep=$('#motT')?$('#motT').value:null;const e=S.logs.find(x=>x.id===ui.modal.id);if(!e){ui.modal=null;md.innerHTML='';return}
+  md.innerHTML=`<div class="modalbg" data-act="mclose"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mT"><div class="row nw sb"><h2 id="mT" style="margin:0">Mot aux familles</h2><button class="x" data-act="mclose" aria-label="Fermer">×</button></div>
+  <p class="small">À recopier dans le carnet de correspondance ou à envoyer par la messagerie de l'établissement. Vérifiez et complétez avant l'envoi.</p>
+  <textarea id="motT" style="min-height:260px">${esc(keep??familyNote(e))}</textarea><div class="row" style="margin-top:10px"><button class="btn" data-act="motcopy">Copier</button><button class="btn ghost" data-act="mclose">Fermer</button></div></div></div>`}}
+function familyNote(e){const c=S.classes.find(x=>x.id===e.c);if(!c)return '';const s=stuOf(c,e.s),lv=c.lv;
+ const motifs=[...new Set(S.logs.filter(x=>x.se===e.se&&x.s===e.s&&(kind(x.b,lv)==='x'||kind(x.b,lv)==='v')).map(x=>bl(x.b,lv).toLowerCase()))];
+ const work=['devsup','retenue'].includes(e.p)?'\nTravail demandé / date : ………………………………\n':'';
+ return `Madame, Monsieur,\n\nJe vous informe que ${s?s.n:'votre enfant'} (${c.name}) a fait l'objet, le ${new Date(e.t).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})} en cours de SVT, de la punition suivante : ${punL(e.p).toLowerCase()}.\nMotif : ${motifs.length?motifs.join(', '):'………………………………'}.\n${work}\nJe reste à votre disposition pour en échanger et vous remercie de bien vouloir signer ce mot.\n\nCordialement,\n${S.prefs.prof||'Le professeur de SVT'}\n\nSignature des responsables légaux :`}
+
+function period(){return `<div class="card"><div class="pre"><button class="chip" data-act="pre" data-k="30">30 derniers jours</button><button class="chip" data-act="pre" data-k="an">Année scolaire</button><button class="chip" data-act="pre" data-k="all">Tout</button></div>
+ <div class="row nw" style="margin-top:4px"><div style="flex:1"><label for="from">Du</label><input type="date" id="from" value="${esc(ui.from)}"></div><div style="flex:1"><label for="to">Au</label><input type="date" id="to" value="${esc(ui.to)}"></div></div></div>`}
+function vCal(){
+ const m=ui.calM||ymd(Date.now()).slice(0,7),[Y,M]=m.split('-').map(Number),first=new Date(Y,M-1,1),nd=new Date(Y,M,0).getDate(),off=(first.getDay()+6)%7,today=ymd(Date.now());
+ const byDay={};S.sessions.forEach(x=>{const d=ymd(x.start);if(d.startsWith(m))(byDay[d]=byDay[d]||[]).push(x)});
+ const col=id=>{const c=S.classes.find(x=>x.id===id);return c&&/^#[0-9a-f]{6}$/i.test(c.col||'')?c.col:'#1c4a32'};
+ const sel=ui.calD&&ui.calD.startsWith(m)?ui.calD:(byDay[today]?today:null);
+ const cells=[...Array(off)].map(()=>'<span></span>').concat([...Array(nd)].map((_,i)=>{const d=m+'-'+String(i+1).padStart(2,'0'),l=byDay[d]||[];
+  return `<button data-act="calday" data-d="${d}" class="${l.length?'has':''}${d===today?' today':''}" aria-pressed="${d===sel}"${l.length?'':' disabled'} aria-label="${esc(dlong(d+'T12:00'))}${l.length?', '+l.length+' séance'+(l.length>1?'s':''):''}">${i+1}<span class="dots">${l.slice(0,4).map(x=>`<i style="background:${col(x.c)}"></i>`).join('')}</span></button>`}));
+ const list=sel?(byDay[sel]||[]).sort((a,b)=>a.start-b.start):[];
+ const nSes=Object.values(byDay).reduce((s,l)=>s+l.length,0);
+ return `<div class="card"><div class="calhead"><button class="x" data-act="calprev" aria-label="Mois précédent">‹</button><b>${esc(first.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}))}</b><button class="x" data-act="calnext" aria-label="Mois suivant">›</button></div>
+ <div class="cal">${['L','M','M','J','V','S','D'].map(x=>`<span class="wd">${x}</span>`).join('')}${cells.join('')}</div>
+ <p class="small">${nSes?nSes+' séance'+(nSes>1?'s':'')+' ce mois-ci. Touchez un jour marqué pour revoir ses séances.':'Aucune séance enregistrée ce mois-ci.'}</p>
+ ${m!==today.slice(0,7)?'<button class="btn ghost" data-act="caltoday">Revenir à aujourd\'hui</button>':''}</div>
+ ${sel?`<div class="card"><h3 style="text-transform:capitalize">${esc(dlong(sel+'T12:00'))}</h3><ul class="list">${list.map(x=>{const c=S.classes.find(y=>y.id===x.c),n=S.logs.filter(e=>e.se===x.id).length,pu=S.logs.filter(e=>e.se===x.id&&e.b==='pun').length;
+  return `<li><span class="g"><span class="cdot" style="background:${col(x.c)}"></span><button class="lnk" data-act="calses" data-id="${esc(x.id)}">${esc(c?c.name:'Classe supprimée')}</button><span class="small" style="margin:0">${sesRange(x)} · ${n} obs.${pu?' · '+pu+' punition'+(pu>1?'s':''):''}</span></span></li>`}).join('')}</ul></div>`:''}`}
+function vBilan(c){
+ if(!c)return noClass();
+ const bseg=`<div class="seg" role="group" aria-label="Affichage du bilan" style="margin-bottom:12px"><button data-act="bview" data-b="classe" aria-pressed="${ui.bview!=='cal'}">Classe</button><button data-act="bview" data-b="cal" aria-pressed="${ui.bview==='cal'}">Calendrier</button></div>`;
+ if(ui.bview==='cal'&&!ui.ses&&!ui.stu)return bseg+vCal();const st=c.students,lv=c.lv;
+ const es=S.logs.filter(e=>e.c===c.id&&inPeriod(e.t)),sm=Object.fromEntries(st.map(s=>[s.id,s.n]));
+ if(ui.ses){const se=S.sessions.find(x=>x.id===ui.ses&&x.c===c.id);if(!se)ui.ses=null;else{
+  const l=S.logs.filter(e=>e.se===se.id),by={};l.forEach(e=>(by[e.s]=by[e.s]||[]).push(e));const nb=Object.keys(by).length;
+  const none=st.filter(s=>!by[s.id]);
+  return `<button class="btn ghost" data-act="back">← ${ui.fromCal?'Retour au calendrier':'Retour au bilan'}</button><h2 style="margin-top:14px">Séance du ${esc(dlong(se.start))} · ${esc(c.name)}</h2>
+  <div class="card"><h3>Rattrapage de fin de séance</h3><p class="small" style="margin:0 0 10px">${none.length?'Élèves sans observation : touchez un nom pour ajouter ce qui vous revient (l\'heure se règle dans la fiche).':'Tous les élèves ont au moins une observation.'}</p>
+  ${none.length?`<div class="chips">${none.map(s=>`<button class="chip" data-act="rattr" data-s="${esc(s.id)}">${esc(s.n)}</button>`).join('')}</div>`:''}</div>
+  <div class="card"><div class="row"><div><label for="ss" style="margin-top:0">Début</label><input type="time" id="ss" value="${hhmm(se.start)}"></div><div><label for="se" style="margin-top:0">Fin</label><input type="time" id="se" value="${se.end?hhmm(se.end):''}"></div></div><p class="small">${l.length} observation${l.length>1?'s':''} · ${nb} élève${nb>1?'s':''} concerné${nb>1?'s':''}</p></div>
+  <div class="card"><h3>Résumé de la séance</h3><pre class="resume">${esc(sesSummary(se))}</pre><div class="row"><button class="btn" data-act="sumcopy">Copier le résumé</button>${navigator.share?'<button class="btn ghost" data-act="sumshare">Partager</button>':''}</div>
+  <label for="snote">Remarque générale sur la séance (incluse dans le résumé)</label><textarea id="snote" style="min-height:80px" placeholder="Ex. TP microscope, groupe calme, fin de séance agitée">${esc(se.note||'')}</textarea></div>
+  ${nb?st.filter(s=>by[s.id]).map(s=>`<div class="card"><h3>${esc(s.n)}</h3><ul class="list">${by[s.id].map(e=>entryLi(e,lv)).join('')}</ul></div>`).join(''):''}
+  <button class="btn danger" data-act="delses">${ui.confirm?'Confirmer : supprimer la séance et ses observations':'Supprimer cette séance'}</button>`}}
+ const s=ui.stu&&stuOf(c,ui.stu);
+ if(!s){ui.stu=null;
+  const nz=(n,k)=>n?`<span class="pill ${k}">${n}</span>`:'<span class="small" style="margin:0">·</span>';
+  const rows=st.map(s=>{const k=counts(es.filter(e=>e.s===s.id),lv);return `<tr><td><button class="lnk" data-act="stu" data-s="${esc(s.id)}">${esc(s.n)}</button></td><td class="r">${nz(k.c,'pc')}</td><td class="r">${nz(k.p,'p1')}</td><td class="r">${nz(k.v,'pv')}</td><td class="r">${nz(k.x,'px')}</td><td class="r">${nz(k.pu,'pp')}</td></tr>`}).join('');
+  const todo=S.logs.filter(e=>e.c===c.id&&e.b==='pun'&&!e.done).sort((a,b)=>a.t-b.t);
+  const ss=S.sessions.filter(x=>x.c===c.id&&inPeriod(x.start)).sort((a,b)=>b.start-a.start);
+  const last5=ss.slice(0,5).map(x=>x.id),seen=new Set(S.logs.filter(e=>last5.includes(e.se)).map(e=>e.s));
+  const valo=new Set(es.filter(e=>['1','c'].includes(kind(e.b,lv))).map(e=>e.s));
+  const notSeen=ss.length>=3?st.filter(x=>!seen.has(x.id)):[],noValo=ss.length>=3?st.filter(x=>!valo.has(x.id)):[];
+  return `${bseg}<h2>Bilan · ${esc(c.name)}</h2>${period()}
+  ${st.length?`<div class="card" style="padding:6px 10px"><table><thead><tr><th>Élève</th><th class="r" title="Compétences SVT">Comp.</th><th class="r" title="Points forts remarquables">Fort</th><th class="r" title="À accompagner">Suivi</th><th class="r" title="Comportements inappropriés">Inap.</th><th class="r">Pun.</th></tr></thead><tbody>${rows}</tbody></table></div><p class="small" style="margin:-4px 0 12px">Un point (·) signifie simplement « rien de particulier relevé ».</p>`:'<p class="small">Aucun élève dans cette classe.</p>'}
+  ${todo.length?`<div class="card"><h3>Punitions à vérifier</h3><ul class="list">${todo.map(e=>`<li><span class="g"><b>${esc(sm[e.s]||'(élève retiré)')}</b><span>${esc(punL(e.p))}</span><span class="small" style="margin:0">${esc(new Date(e.t).toLocaleDateString('fr-FR'))}</span></span><button class="done" data-act="mot" data-id="${esc(e.id)}">Mot</button><button class="done" data-act="pundone" data-id="${esc(e.id)}" aria-pressed="false">Faite</button></li>`).join('')}</ul></div>`:''}
+  ${ss.length>=3?`<div class="card"><h3>Attention équitable</h3><p class="small" style="margin:0 0 8px">Repère pour vous seul, pas un jugement sur les élèves.</p>
+   <p class="gl" style="margin-top:4px">Sans observation lors des ${Math.min(5,ss.length)} dernières séances (${notSeen.length})</p><p style="margin:0">${notSeen.length?notSeen.map(x=>esc(x.n)).join(', '):'Aucun.'}</p>
+   <p class="gl">Sans valorisation notée sur la période (${noValo.length})</p><p style="margin:0">${noValo.length?noValo.map(x=>esc(x.n)).join(', '):'Aucun.'}</p></div>`:''}
+  <div class="card"><h3>Séances</h3>${ss.length?`<ul class="list">${ss.map(x=>{const n=S.logs.filter(e=>e.se===x.id).length;return `<li><span class="g"><button class="lnk" data-act="ses" data-id="${esc(x.id)}">${esc(dlong(x.start))}</button><span class="small" style="margin:0">${sesRange(x)} · ${n} obs.</span></span></li>`}).join('')}</ul>`:'<p class="small" style="margin:0">Aucune séance sur cette période.</p>'}</div>`}
+ const l=es.filter(e=>e.s===s.id),nses=new Set(l.map(e=>e.se)).size,g={};
+ l.forEach(e=>{if(e.b!=='note'&&e.b!=='pun')g[e.b]=(g[e.b]||0)+1});
+ const bm=bmap(lv),att=Object.entries(g).filter(([b])=>!isComp(b,lv)).sort((a,b)=>b[1]-a[1]),mx=att.length?att[0][1]:1;
+ const cg={};Object.entries(g).filter(([b])=>isComp(b,lv)).forEach(([b,n])=>{const k=(bm[b]||{}).cp||'dem';(cg[k]=cg[k]||[]).push([b,n])});
+ const ap=S.notes[c.id+'__'+s.id]||'';
+ const bySe={};l.slice().reverse().forEach(e=>(bySe[e.se]=bySe[e.se]||[]).push(e));const k=counts(l,lv);
+ return `<button class="btn ghost" data-act="back">← Toute la classe</button>
+ <h2 style="margin-top:14px">${esc(s.n)}</h2>${period()}
+ <div class="kpi"><div><b>${k.c}</b><span>réussites en SVT</span></div><div><b>${k.p}</b><span>points forts remarquables</span></div><div><b>${k.v+k.x}</b><span>à accompagner / inappropriés</span></div></div>
+ <div class="card"><h3>Appréciation</h3><textarea id="appr" placeholder="Rédigez ou générez un brouillon à partir des observations">${esc(ap)}</textarea>
+ <div class="row" style="margin-top:10px"><button class="btn" data-act="draft">Brouillon automatique</button><button class="btn ghost" data-act="copy">Copier</button></div>
+ <p class="small" id="aist">Les apprentissages d'abord, puis l'attitude. Un fait isolé n'est pas repris. Sans nom ni prénom, formulation bienveillante.</p></div>
+ <div class="card"><h3>Compétences SVT</h3>${Object.keys(cg).length?Object.keys(COMP).filter(x=>cg[x]).map(x=>`<div class="cgrp"><b>${esc(COMP[x])}</b>${cg[x].map(([b,n])=>`<div class="row sb"><span>${dot(b,lv)} ${esc(bl(b,lv))}</span><span class="pill pc">${n}</span></div>`).join('')}</div>`).join(''):'<p class="small" style="margin:0">Aucune réussite notée sur cette période.</p>'}</div>
+ <div class="card"><h3>Attitudes et vie de classe</h3>${att.length?`<div class="bars">${att.map(([b,n])=>`<div class="b"><span class="lab">${dot(b,lv)}${esc(bl(b,lv))}</span><span class="n">${n}</span><span class="tr"><span style="width:${Math.round(n/mx*100)}%;background:var(--${({1:'leaf','-1':'vig','-2':'bad',0:'info'})[bv(b,lv)]||'info'})"></span></span></div>`).join('')}</div>`:'<p class="small" style="margin:0">Rien de particulier relevé.</p>'}</div>
+ <div class="card"><h3>Historique par séance</h3>${Object.keys(bySe).length?Object.entries(bySe).map(([id,a])=>{const x=S.sessions.find(y=>y.id===id);return `<p class="gl" style="margin-top:8px">${x?esc(dlong(x.start))+' · '+sesRange(x):esc(dlong(a[0].t))}</p><ul class="list">${a.map(e=>entryLi(e,lv)).join('')}</ul>`}).join(''):'<p class="small">Rien pour le moment.</p>'}</div>`}
+
+function vClasses(){
+ if(ui.edit){const c=ui.edit==='new'?null:S.classes.find(x=>x.id===ui.edit);const lv=c?c.lv:'5e',col=$('#ccol')?$('#ccol').value:(c&&c.col?c.col:PALETTE[S.classes.length%PALETTE.length]);setColor({col});
+  return `<h2>${c?'Modifier la classe':'Nouvelle classe'}</h2><div class="card"><label for="cn" style="margin-top:0">Nom de la classe</label><input id="cn" data-keep value="${esc(c?c.name:'')}" placeholder="Ex. 5e B">
+  <label for="clv">Niveau (choisit la liste de comportements)</label><select id="clv" data-keep>${LV.map(x=>`<option value="${x.id}"${x.id===lv?' selected':''}>${x.l}</option>`).join('')}</select>
+  <label>Couleur de la classe</label><div class="swatches">${PALETTE.map(x=>`<button class="sw" style="background:${x}" data-act="col" data-c="${x}" aria-pressed="${x===col}" aria-label="Couleur ${x}"></button>`).join('')}<input type="color" id="ccol" value="${esc(col)}" aria-label="Autre couleur"></div>
+  <label for="cs">Élèves, un par ligne</label><div class="row" style="margin-bottom:8px"><button class="btn ghost" data-act="xlpick">Importer un fichier Excel ou LibreOffice</button><span class="small" id="xlst" style="margin:0">Colonnes « Nom » et « Prénom »</span></div>
+  <textarea id="cs" data-keep rows="12" placeholder="Ou collez la liste ici">${esc(c?c.students.map(s=>s.n).join('\n'):'')}</textarea>
+  <p class="small">Fichier .xlsx, .ods ou .csv présent dans le téléphone. Vous pouvez corriger les noms avant d'enregistrer. Les nouveaux élèves sont placés dans les places libres du plan.</p>
+  <div class="row" style="margin-top:12px"><button class="btn" data-act="savecls">Enregistrer</button><button class="btn ghost" data-act="cancel">Annuler</button>${c?`<button class="btn danger" data-act="delcls">${ui.confirm?'Confirmer la suppression':'Supprimer la classe'}</button>`:''}</div>
+  ${c&&ui.confirm?'<p class="small">La classe, ses séances, ses observations et ses appréciations seront supprimées définitivement.</p>':''}</div>`}
+ return `<div class="tool"><h2 style="margin:0">Mes classes</h2><button class="btn" data-act="newcls">Nouvelle classe</button></div>
+ ${S.classes.length?S.classes.map(c=>`<div class="card"><div class="row nw sb"><div><b style="font:700 19px var(--hd)"><span class="cdot" style="background:${/^#[0-9a-f]{6}$/i.test(c.col||'')?c.col:'#1c4a32'}"></span>${esc(c.name)}</b><div class="small" style="margin:0">${lvName(c.lv)} · ${c.students.length} élèves</div></div><button class="btn ghost" data-act="editcls" data-id="${esc(c.id)}">Modifier</button></div></div>`).join(''):noClass()}`}
+
+function vReglages(){
+ const lv=ui.behLv,be=ui.behEdit||(ui.behEdit=beh(lv).map(b=>({...b}))),pe=ui.punEdit||(ui.punEdit=punList().map(x=>({...x})));
+ const fs='showSaveFilePicker' in window,lf=META.lastFile?new Date(META.lastFile).toLocaleString('fr-FR',{dateStyle:'long',timeStyle:'short'}):'jamais';
+ const typ=b=>b.ax==='comp'?'c':String(b.v);
+ return `<h2>Réglages</h2>
+ <div class="card"><h3>En classe</h3>
+ <label class="switch"><span>Fermer la fiche après un choix (2 gestes par observation)</span><input type="checkbox" id="autoClose"${S.prefs.autoClose!==false?' checked':''}></label>
+ <label class="switch"><span>Vibration de confirmation (Android)</span><input type="checkbox" id="vib"${S.prefs.vib!==false?' checked':''}></label>
+ <label for="prof">Signature des mots aux familles</label><input id="prof" value="${esc(S.prefs.prof||'')}" placeholder="Ex. M. Dupont, professeur de SVT"></div>
+ <div class="card"><h3>Déverrouillage rapide</h3><p class="small" style="margin:0 0 8px">Un code de 4 à 8 chiffres remplace le mot de passe jusqu'à minuit. Le mot de passe est demandé à la première ouverture de chaque journée, et après 5 erreurs de code.</p>
+ <form id="fpinset" class="row nw"><input id="pinNew" class="pin" style="font-size:20px" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="${S.prefs.pin?'Code actif':'Nouveau code'}" autocomplete="off" aria-label="Code"><button class="btn" type="submit">${S.prefs.pin?'Changer':'Activer'}</button></form>
+ ${S.prefs.pin?'<button class="btn ghost" style="margin-top:8px" data-act="pinoff">Désactiver le code</button>':''}</div>
+ <div class="card"><h3>Sauvegarde dans un fichier</h3>
+ <p class="small" style="margin:0 0 10px">Le carnet s'enregistre en continu sur ce téléphone. Le fichier de sauvegarde, chiffré avec votre mot de passe, permet de le retrouver si vous changez de téléphone. Dernière sauvegarde : <b>${esc(lf)}</b>.</p>
+ ${fs?`<p class="small" style="margin:0 0 10px">${fileH?(fileOK?'Fichier lié : chaque modification y est aussi enregistrée.':'Fichier lié, en attente de votre autorisation.'):'Vous pouvez lier un fichier : chaque modification y sera enregistrée automatiquement.'}</p>`:''}
+ <div class="row">${fs?(fileH&&!fileOK?'<button class="btn" data-act="fileperm">Réactiver le fichier lié</button>':`<button class="btn${fileH?' ghost':''}" data-act="filelink">${fileH?'Changer de fichier':'Lier un fichier'}</button>`):''}<button class="btn${fs?' ghost':''}" data-act="backup">Enregistrer une sauvegarde</button><button class="btn ghost" data-act="imppick">Restaurer</button></div></div>
+ <div class="card"><h3>Comportements par niveau</h3>
+ <label for="blv" style="margin-top:0">Niveau</label><select id="blv">${LV.map(x=>`<option value="${x.id}"${x.id===lv?' selected':''}>${x.l}</option>`).join('')}</select>
+ <p class="small" style="margin:8px 0 4px">★ = favori, affiché en grand dans la fiche (6 au plus conseillé). La formule alimente le brouillon d'appréciation.</p>
+ ${be.map((b,i)=>`<div class="behrow"><button class="star" data-act="star" data-i="${i}" aria-pressed="${!!b.f}" aria-label="Favori">★</button><input data-f="l" data-i="${i}" value="${esc(b.l)}" aria-label="Intitulé"><button class="x" data-act="behdel" data-i="${i}" aria-label="Supprimer">×</button>
+  <select class="full" data-f="type" data-i="${i}" aria-label="Type">${Object.entries(TYP).map(([k,t])=>`<option value="${k}"${typ(b)===k?' selected':''}>${t}</option>`).join('')}</select>
+  ${b.ax==='comp'?`<select class="full" data-f="cp" data-i="${i}" aria-label="Compétence du programme">${Object.entries(COMP).map(([k,t])=>`<option value="${k}"${b.cp===k?' selected':''}>${esc(t)}</option>`).join('')}</select>`:''}
+  ${b.v!==0?`<input class="full" data-f="ap" data-i="${i}" value="${esc(b.ap||'')}" placeholder="Formule d'appréciation" aria-label="Formule pour l'appréciation">`:''}</div>`).join('')}
+ <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="behadd">Ajouter</button><button class="btn" data-act="behsave">Enregistrer la liste</button><button class="btn ghost" data-act="behreset">Liste d'origine</button></div></div>
+ <div class="card"><h3>Punitions de votre règlement intérieur</h3><p class="small" style="margin:0 0 6px">Gardez uniquement celles que prévoit le règlement de votre établissement.</p>
+ ${pe.map((x,i)=>`<div class="row nw" style="margin:6px 0"><input data-pf="l" data-i="${i}" value="${esc(x.l)}" aria-label="Punition"><button class="x" data-act="pundel" data-i="${i}" aria-label="Supprimer">×</button></div>`).join('')}
+ <div class="row" style="margin-top:8px"><button class="btn ghost" data-act="punadd">Ajouter</button><button class="btn" data-act="punsave">Enregistrer</button><button class="btn ghost" data-act="punreset">Liste d'origine</button></div>
+ <details class="memo" style="margin-top:8px"><summary>Rappels réglementaires</summary><ul>${MEMO.map(m=>`<li>${esc(m)}</li>`).join('')}</ul><p class="small">Source : circulaire n° 2014-059 du 27 mai 2014 et fiches Éduscol.</p></details></div>
+ <div class="card"><h3>Exporter vers un tableur</h3><p class="small" style="margin:0 0 10px">Toutes les classes, séances et observations au format CSV. Ce fichier n'est pas chiffré : rangez-le avec soin et supprimez-le après usage.</p><button class="btn ghost" data-act="csv">Exporter le CSV</button></div>
+ <div class="card"><h3>Fin d'année scolaire</h3><p class="small" style="margin:0 0 10px">Les observations n'ont pas à être conservées au-delà de l'année. Enregistrez d'abord une sauvegarde si besoin, puis effacez.</p>
+ <div class="row"><button class="btn danger" data-act="yearwipe">${ui.yearStep===1?'Confirmer : effacer séances, observations et appréciations':'Effacer les données de l\'année'}</button>${ui.yearStep===1?'<button class="btn ghost" data-act="yearcancel">Annuler</button>':''}</div>
+ ${ui.yearStep===1?'<p class="small">Les classes, plans et listes de comportements sont conservés. Cette action est définitive.</p>':''}</div>
+ <div class="card"><h3>Sécurité</h3><p class="small" style="margin:0 0 6px">Le carnet se verrouille après 1 heure sans utilisation, ou quand vous touchez « Verrouiller ». Aucune donnée ne quitte le téléphone : l'application n'a pas le droit de se connecter à Internet.</p>
+ <form id="fpw"><label for="oid">Identifiant actuel</label><input id="oid" autocomplete="username" autocapitalize="none" required><label for="op">Mot de passe actuel</label><input id="op" type="password" autocomplete="current-password" required><label for="nid">Nouvel identifiant (laisser vide pour le garder)</label><input id="nid" autocomplete="off" autocapitalize="none"><label for="np">Nouveau mot de passe</label><input id="np" type="password" autocomplete="new-password" minlength="8" required><label for="np2">Confirmer</label><input id="np2" type="password" autocomplete="new-password" required>
+ <p class="err" id="pwerr" role="alert"></p><button class="btn ghost" type="submit">Changer d'identifiants</button></form></div>`}
+
+/* ================= textes ================= */
+const join=a=>a.length>1?a.slice(0,-1).join(', ')+' et '+a[a.length-1]:a[0]||'';
+function draft(l,lv,nSes){const bm=bmap(lv),g={};l.forEach(e=>{if(bm[e.b])g[e.b]=(g[e.b]||0)+1});
+ const top=(f,k,min)=>Object.entries(g).filter(([b,n])=>f(bm[b])&&bm[b].ap&&n>=(min||1)).sort((a,b)=>b[1]-a[1]).slice(0,k).map(([b])=>bm[b].ap);
+ const comp=top(b=>b.ax==='comp',2),att=top(b=>b.v===1&&b.ax!=='comp',1),V=top(b=>b.v<0,2,2);
+ const neg=Object.entries(g).filter(([b,n])=>bm[b].v<0&&n>=2).reduce((s,[b,n])=>s+n*(bm[b].v===-2?2:1),0),n=Math.max(nSes||0,1),rate=neg/n,few=(nSes||0)<3;
+ const P=[...comp,...att].slice(0,2);
+ let s=few?(P.length?'Bon trimestre':'Trimestre correct dans l\'ensemble'):rate<0.2?(P.length>=2?'Très bon trimestre':'Bon trimestre'):rate<0.5?'Trimestre satisfaisant dans l\'ensemble':rate<1?'Trimestre encourageant':'Trimestre à consolider';
+ s+=P.length?', marqué par '+join(P)+'.':'.';
+ if(V.length){const j=join(V);s+=' Pour progresser encore, il convient '+(/^[aeiouyéèêâîôûh]/i.test(j)?'d\'':'de ')+j+'.'}
+ return s+(rate<0.5?' Continuez ainsi !':' Les efforts doivent se poursuivre, courage !')}
+function sesSummary(se){if(!se)return '';const c=S.classes.find(x=>x.id===se.c);if(!c)return '';const lv=c.lv;
+ const l=S.logs.filter(e=>e.se===se.id).sort((a,b)=>a.t-b.t),out=[];
+ out.push('Séance du '+dlong(se.start)+' · '+c.name+' ('+lvName(lv)+')');out.push('Horaires : '+sesRange(se));
+ const abs=[...new Set(l.filter(e=>e.b==='abs').map(e=>(stuOf(c,e.s)||{}).n||'?'))];
+ out.push('Effectif : '+c.students.length+' élèves'+(abs.length?' · Absents ('+abs.length+') : '+abs.join(', '):' · Aucun absent noté'));
+ const sec=(title,f,fmt)=>{const by={};l.filter(f).forEach(e=>(by[e.s]=by[e.s]||[]).push(e));const k=c.students.filter(s=>by[s.id]);if(!k.length)return false;out.push('');out.push(title);k.forEach(s=>out.push('- '+s.n+' : '+by[s.id].map(fmt).join(', ')));return true};
+ sec('Réussites en SVT',e=>kind(e.b,lv)==='c',e=>bl(e.b,lv));
+ sec('Points forts remarquables',e=>kind(e.b,lv)==='1',e=>bl(e.b,lv));
+ sec('À accompagner',e=>kind(e.b,lv)==='v',e=>bl(e.b,lv));
+ if(!sec('Comportements inappropriés',e=>kind(e.b,lv)==='x',e=>bl(e.b,lv)+' ('+hm(e.t)+')')){out.push('');out.push('Aucun comportement inapproprié relevé.')}
+ sec('Punitions données',e=>e.b==='pun',e=>punL(e.p)+(e.done?' (faite)':' (à vérifier)'));
+ sec('Informations',e=>bv(e.b,lv)===0&&e.b!=='abs',e=>bl(e.b,lv));
+ sec('Notes',e=>e.b==='note',e=>e.n);
+ if(se.note){out.push('');out.push('Remarque générale : '+se.note)}
+ return out.join('\n')}
+function csv(){const rows=[['Classe','Niveau','Élève','Date','Début séance','Fin séance','Heure','Observation','Type','Compétence','Note / suivi']];
+ for(const c of S.classes){const sm=Object.fromEntries(c.students.map(s=>[s.id,s.n])),se=Object.fromEntries(S.sessions.map(x=>[x.id,x])),bm=bmap(c.lv);
+  for(const e of S.logs.filter(e=>e.c===c.id).sort((a,b)=>a.t-b.t)){const x=se[e.se],k=kind(e.b,c.lv);rows.push([c.name,lvName(c.lv),sm[e.s]||'(élève retiré)',ymd(e.t),x?hm(x.start):'',x&&x.end?hm(x.end):'',hm(e.t),elabel(e,c.lv),e.b==='note'?'Note':e.b==='pun'?'Punition':TYP[k==='c'?'c':String(bv(e.b,c.lv))]||'',k==='c'?COMP[(bm[e.b]||{}).cp]||'':'',e.b==='pun'?(e.done?'faite':'à vérifier'):e.n||''])}}
+ return rows.map(r=>r.map(x=>{x=String(x);return /[;"\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}).join(';')).join('\r\n')}
+
+/* ================= import Excel / LibreOffice / CSV (lu sur l'appareil) ================= */
+async function unzip(buf){const dv=new DataView(buf);let e=buf.byteLength-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw new Error('zip');
+ const n=dv.getUint16(e+10,true),files={};let p=dv.getUint32(e+16,true);
+ for(let i=0;i<n;i++){if(dv.getUint32(p,true)!==0x02014b50)break;const meth=dv.getUint16(p+10,true),csz=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+  files[td.decode(new Uint8Array(buf,p+46,nl))]={meth,csz,off};p+=46+nl+xl+cl}
+ return{names:Object.keys(files),async read(name){const f=files[name];if(!f)return null;const ln=dv.getUint16(f.off+26,true),lx=dv.getUint16(f.off+28,true),d=new Uint8Array(buf,f.off+30+ln+lx,f.csz);
+  if(f.meth===0)return td.decode(d);return await new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()}}}
+const xml=s=>new DOMParser().parseFromString(s,'application/xml');
+const tags=(n,t)=>[...n.getElementsByTagNameNS('*',t)];
+const colIdx=r=>{const m=/^[A-Z]+/.exec(r||'');let n=0;if(!m)return -1;for(const ch of m[0])n=n*26+ch.charCodeAt(0)-64;return n-1};
+async function readRows(file){const name=file.name.toLowerCase();
+ if(/\.(csv|txt)$/.test(name)){const t=(await file.text()).replace(/^﻿/,'');const h=t.split('\n')[0];const sep=h.includes(';')?';':h.includes('\t')?'\t':',';return t.split(/\r?\n/).map(r=>r.split(sep).map(x=>x.replace(/^"|"$/g,'').trim()))}
+ const z=await unzip(await file.arrayBuffer());
+ if(z.names.includes('content.xml')){const d=xml(await z.read('content.xml'));const tb=tags(d,'table')[0];if(!tb)return[];
+  return tags(tb,'table-row').map(r=>{const o=[];for(const c of [...r.children]){if(c.localName!=='table-cell'&&c.localName!=='covered-table-cell')continue;const rep=Math.min(+(c.getAttribute('table:number-columns-repeated')||1),50);const v=tags(c,'p').map(x=>x.textContent).join(' ').trim();for(let i=0;i<rep;i++)o.push(v)}return o})}
+ const ss=[];const sx=await z.read('xl/sharedStrings.xml');if(sx)tags(xml(sx),'si').forEach(si=>ss.push(tags(si,'t').map(t=>t.textContent).join('')));
+ const sh=z.names.filter(x=>/^xl\/worksheets\/sheet\d+\.xml$/.test(x)).sort((a,b)=>parseInt(a.match(/\d+/))-parseInt(b.match(/\d+/)))[0];if(!sh)throw new Error('sheet');
+ return tags(xml(await z.read(sh)),'row').map(r=>{const o=[];tags(r,'c').forEach((c,i)=>{const ix=colIdx(c.getAttribute('r'));const t=c.getAttribute('t');let v;
+  if(t==='s')v=ss[+((tags(c,'v')[0]||{}).textContent)]||'';else if(t==='inlineStr')v=tags(c,'t').map(x=>x.textContent).join('');else v=(tags(c,'v')[0]||{}).textContent||'';o[ix<0?i:ix]=String(v).trim()});return Array.from(o,x=>x||'')})}
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z ]/g,' ').trim();
+function rowsToNames(rows){rows=rows.filter(r=>r.some(x=>String(x||'').trim()));if(!rows.length)return[];
+ let hi=-1,cn=-1,cp=-1,cf=-1;
+ for(let i=0;i<Math.min(rows.length,6)&&hi<0;i++){rows[i].forEach((v,j)=>{const x=norm(v);if(/^prenom/.test(x))cp=j;else if(x==='nom'||/^nom\b/.test(x)&&!/prenom/.test(x))cn=j;else if(x==='eleve'||x==='eleves'||/nom.*prenom/.test(x))cf=j});if(cn>=0||cp>=0||cf>=0)hi=i}
+ const data=rows.slice(hi+1);
+ if(cn>=0&&cp>=0)return data.map(r=>[(r[cp]||'').trim(),(r[cn]||'').trim()].filter(Boolean).join(' ')).filter(Boolean);
+ if(cf>=0)return data.map(r=>(r[cf]||'').trim()).filter(Boolean);
+ if(cn>=0)return data.map(r=>(r[cn]||'').trim()).filter(Boolean);
+ return data.map(r=>r[1]?(String(r[1]).trim()+' '+String(r[0]).trim()).trim():String(r[0]).trim()).filter(Boolean)}
+
+/* ================= actions ================= */
+let tT;
+function toast(msg,undo){const el=$('#toast');el.innerHTML=`<span>${esc(msg)}</span>${undo?'<button data-act="undo">Annuler</button>':''}`;el.hidden=false;ui.undo=undo||null;clearTimeout(tT);tT=setTimeout(()=>{el.hidden=true;ui.undo=null},4500)}
+let apT;function saveAppr(){const c=curClass(),ta=$('#appr');if(!c||!ta||!ui.stu)return;S.notes[c.id+'__'+ui.stu]=ta.value;save()}
+async function giveFile(name,text,type){const blob=new Blob([text],{type});
+ try{const f=new File([blob],name,{type});if(navigator.canShare&&navigator.canShare({files:[f]})&&matchMedia('(pointer:coarse)').matches){await navigator.share({files:[f],title:name});return true}}catch(e){if(e&&e.name==='AbortError')return false}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);return true}
+async function backup(){clearTimeout(saveT);await doSave();if(!REC)return;
+ const ok=await giveFile('carnet-svt-'+ymd(Date.now())+'.carnet',JSON.stringify(REC),'application/json');
+ if(ok){META.lastFile=Date.now();await idb.set('meta',META);toast('Sauvegarde créée. Rangez-la dans Fichiers ou sur votre Drive.');sched(true)}}
+async function linkFile(){try{const h=await showSaveFilePicker({suggestedName:'carnet-svt.carnet',types:[{description:'Carnet SVT',accept:{'application/json':['.carnet']}}]});fileH=h;fileOK=true;await idb.set('fileH',h);await doSave();toast('Fichier lié : vos modifications y seront enregistrées.')}catch(e){if(e&&e.name!=='AbortError')toast('Impossible de lier ce fichier.')}sched(true)}
+function saveClass(){
+ const name=$('#cn').value.trim();if(!name){toast('Donnez un nom à la classe.');$('#cn').focus();return}
+ const lines=[...new Set($('#cs').value.split(/\r?\n/).map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean))];
+ const old=ui.edit==='new'?null:S.classes.find(x=>x.id===ui.edit),om={};(old?old.students:[]).forEach(s=>om[s.n.toLowerCase()]=s.id);
+ const students=lines.map(n=>({id:om[n.toLowerCase()]||uid(),n})),lv=$('#clv').value,col=$('#ccol').value;
+ let c=old;if(old)Object.assign(old,{name,lv,students,col});else{c={id:uid(),name,lv,students,col,seats:{}};S.classes.push(c);ui.cur=c.id}
+ autoSeat(c);save();ui.edit=null;ui.view='seance';toast('Classe enregistrée : '+lines.length+' élèves.');sched(true)}
+function delClass(){const id=ui.edit;S.classes=S.classes.filter(c=>c.id!==id);S.logs=S.logs.filter(e=>e.c!==id);S.sessions=S.sessions.filter(x=>x.c!==id);for(const k of Object.keys(S.notes))if(k.startsWith(id+'__'))delete S.notes[k];
+ save();ui.edit=null;ui.confirm=false;ui.cur=null;toast('Classe supprimée.');sched(true)}
+async function afterOpen(data){S=Object.assign(blank(),data);S.prefs=S.prefs||{};const p=S.prefs;ui.cur=p.cur||null;ui.mode=p.mode||'eleve';ui.from=p.from||'';ui.to=p.to||'';ui.layout=p.layout||'plan';
+ S.classes.forEach(c=>{c.students=c.students||[];autoSeat(c)});
+ ui.auth='app';ui.view='seance';ui.err='';fails=0;lastAct=Date.now();ui.behEdit=null;ui.punEdit=null;try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ if(fileH){try{fileOK=(await fileH.queryPermission({mode:'readwrite'}))==='granted'}catch(e){fileOK=false}}}
+
+document.addEventListener('submit',async ev=>{ev.preventDefault();const f=ev.target;
+ if(f.id==='fauth'){const id=$('#aid').value.trim(),pw=$('#apw').value,err=$('#aerr'),btn=f.querySelector('button[type=submit]');
+  if(!crypto.subtle){err.textContent='Ouvrez l\'application depuis son adresse https pour activer le chiffrement.';return}
+  if(Date.now()<waitUntil){err.textContent='Trop d\'essais : patientez '+Math.ceil((waitUntil-Date.now())/1000)+' s.';return}
+  btn.disabled=true;err.textContent='Ouverture…';
+  try{
+   if(pendingImport){const r=await unseal(pendingImport,id,pw);K=r.k;REC=pendingImport;await idb.set('vault',REC);pendingImport=null;await afterOpen(r.data);toast('Sauvegarde restaurée.')}
+   else if(ui.auth==='setup'){if(pw.length<8)throw{msg:'Le mot de passe doit faire au moins 8 caractères.'};if(pw!==$('#apw2').value)throw{msg:'Les deux mots de passe ne correspondent pas.'};
+    const salt=crypto.getRandomValues(new Uint8Array(16));K={key:await derive(id,pw,salt,ITER),salt,iter:ITER};await afterOpen(blank());S.prefs.autoClose=true;await doSave()}
+   else{const rec=await idb.get('vault');if(!rec){ui.auth='setup';render(true);return}const r=await unseal(rec,id,pw);K=r.k;REC=rec;await afterOpen(r.data)}
+   if(S.prefs.pin)await wrapPin(S.prefs.pin);
+   render(true)}
+  catch(e){btn.disabled=false;if(e&&e.msg){err.textContent=e.msg;return}fails++;if(fails>=5){waitUntil=Date.now()+30e3;fails=0}err.textContent=pendingImport?'Identifiant ou mot de passe incorrect pour cette sauvegarde.':'Identifiant ou mot de passe incorrect.'}}
+ if(f.id==='fpin'){const err=$('#aerr'),pin=$('#pinIn').value,btn=f.querySelector('button[type=submit]');const r=await pinValid();if(!r){ui.auth='login';render(true);return}
+  btn.disabled=true;err.textContent='Ouverture…';
+  try{const pk=await pbk('pin\u0000'+pin,ub64(r.salt),300000,false);const raw=await dec(pk,r);const key=await crypto.subtle.importKey('raw',raw,{name:'AES-GCM'},true,['encrypt','decrypt']);
+   const rec=await idb.get('vault');const data=await openWith(rec,key);K={key,salt:ub64(rec.salt),iter:rec.iter};REC=rec;await afterOpen(data);r.fails=0;await idb.set('pin',r);render(true)}
+  catch(e){btn.disabled=false;r.fails=(r.fails||0)+1;if(r.fails>=5){await idb.del('pin');ui.auth='login';ui.err='Trop d\'erreurs : saisissez votre mot de passe.';render(true);return}await idb.set('pin',r);err.textContent='Code incorrect ('+(5-r.fails)+' essai'+(5-r.fails>1?'s':'')+' restant'+(5-r.fails>1?'s':'')+').';$('#pinIn').value=''}}
+ if(f.id==='fpinset'){const v=$('#pinNew').value;if(!/^\d{4,8}$/.test(v)){toast('Le code doit compter 4 à 8 chiffres.');return}S.prefs.pin=v;await wrapPin(v);save();toast('Code activé jusqu\'à minuit, puis chaque jour après le mot de passe.');sched(true)}
+ if(f.id==='fpw'){const err=$('#pwerr');err.textContent='';
+  const oid=$('#oid').value.trim(),op=$('#op').value,nid=$('#nid').value.trim()||oid,np=$('#np').value;
+  if(np.length<8){err.textContent='Le nouveau mot de passe doit faire au moins 8 caractères.';return}
+  if(np!==$('#np2').value){err.textContent='Les deux mots de passe ne correspondent pas.';return}
+  clearTimeout(saveT);await doSave();
+  try{await unseal(REC,oid,op)}catch(e){err.textContent='Identifiant ou mot de passe actuel incorrect.';return}
+  const salt=crypto.getRandomValues(new Uint8Array(16));K={key:await derive(nid,np,salt,ITER),salt,iter:ITER};await doSave();if(S.prefs.pin)await wrapPin(S.prefs.pin);f.reset();toast('Identifiants modifiés. Pensez à refaire une sauvegarde.')}});
+
+/* glisser-déposer des étiquettes dans le plan */
+let drag=null;
+document.addEventListener('pointerdown',e=>{if(!ui.editPlan)return;const t=e.target.closest('.pt');if(!t)return;drag={sid:t.dataset.s,x:e.clientX,y:e.clientY,el:t,ghost:null}});
+document.addEventListener('pointermove',e=>{if(!drag)return;if(!drag.ghost){if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<6)return;const r=drag.el.getBoundingClientRect(),g=drag.el.cloneNode(true);g.classList.add('dragghost');g.style.width=r.width+'px';g.style.height=r.height+'px';document.body.appendChild(g);drag.ghost=g;drag.ox=drag.x-r.left;drag.oy=drag.y-r.top;drag.el.classList.add('dragging')}
+ drag.ghost.style.transform=`translate(${e.clientX-drag.ox}px,${e.clientY-drag.oy}px)`;
+ document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));const o=document.elementFromPoint(e.clientX,e.clientY),s=o&&o.closest('[data-seat]');if(s)s.classList.add('over');
+ const w=$('.planwrap');if(w){const r=w.getBoundingClientRect();if(e.clientX>r.right-36)w.scrollLeft+=10;else if(e.clientX<r.left+36)w.scrollLeft-=10}if(e.clientY>innerHeight-56)scrollBy(0,10);else if(e.clientY<56)scrollBy(0,-10);e.preventDefault()},{passive:false});
+function endDrag(e,cancel){if(!drag)return;const d=drag;drag=null;if(!d.ghost)return;d.ghost.remove();d.el.classList.remove('dragging');document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));
+ suppress=true;setTimeout(()=>suppress=false,60);if(cancel)return;const o=document.elementFromPoint(e.clientX,e.clientY),s=o&&o.closest('[data-seat]');if(s){moveSeat(curClass(),d.sid,+s.dataset.seat);ui.pick=null;sched(true)}}
+document.addEventListener('pointerup',e=>endDrag(e));document.addEventListener('pointercancel',e=>endDrag(e,true));
+
+document.addEventListener('click',async ev=>{
+ if(suppress){ev.preventDefault();return}
+ const t=ev.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;
+ if((a==='bg'||(a==='mclose'&&t.classList.contains('modalbg')))&&ev.target!==t)return;
+ if(ui.auth!=='app'){
+  if(a==='imppick'){$('#fileIn').value='';$('#fileIn').click()}
+  else if(a==='impcancel'){pendingImport=null;ui.err='';render(true)}
+  else if(a==='usepw'){ui.auth='login';ui.err='';render(true)}
+  else if(a==='wipe'){if(!ui.wipe){ui.wipe=true;render(true);return}for(const k of ['vault','meta','fileH','pin'])await idb.del(k);META={};fileH=null;ui.wipe=false;ui.auth='setup';render(true)}
+  return}
+ const c=curClass();
+ const close=()=>{if(S.prefs.autoClose!==false){ui.sheet=null;ui.sheetSe=null}};
+ switch(a){
+ case'lock':lock();return;
+ case'view':ui.view=t.dataset.v;ui.edit=null;ui.confirm=false;ui.ses=null;ui.editPlan=false;ui.pick=null;ui.yearStep=0;if(ui.view!=='reglages'){ui.behEdit=null;ui.punEdit=null}scrollTo(0,0);break;
+ case'cls':ui.cur=t.dataset.id;ui.stu=null;ui.ses=null;ui.burst=null;ui.editPlan=false;save();break;
+ case'mode':ui.mode=t.dataset.m;save();break;
+ case'layout':ui.layout=t.dataset.l;save();break;
+ case'planEdit':ui.editPlan=true;ui.pick=null;break;
+ case'planDone':ui.editPlan=false;ui.pick=null;toast('Plan enregistré.');break;
+ case'flip':c.flip=!c.flip;save();break;
+ case'planReset':autoSeat(c,true);save();break;
+ case'pick':{const sid=t.dataset.s;if(ui.pick&&ui.pick!==sid){const tg=c.seats[sid];moveSeat(c,ui.pick,Number.isInteger(tg)?tg:-1);ui.pick=null}else ui.pick=ui.pick===sid?null:sid;break}
+ case'seat':if(ui.pick){moveSeat(c,ui.pick,+t.dataset.seat);ui.pick=null}break;
+ case'burst':ui.burst=ui.burst===t.dataset.b?null:t.dataset.b;break;
+ case'pickcls':ui.cur=t.dataset.id;ui.stu=null;ui.ses=null;ui.burst=null;save();break;
+ case'goses':ui.view='seance';ui.editPlan=false;scrollTo(0,0);break;
+ case'startses':{const v=$('#sest')&&$('#sest').value;const now=Date.now(),pick=v&&v!==hhmm(now)&&v!==hhmm(now-60e3)?atTime(now,v):null;startSes(c,pick||now);buzz();toast('Séance démarrée avec la classe '+c.name+'.');break}
+ case'endses':{const s=active(c);if(s){s.end=Date.now();save();ui.view='bilan';ui.stu=null;ui.ses=s.id;ui.fromCal=false;ui.confirm=false;scrollTo(0,0);toast('Séance terminée : rattrapage et résumé.')}break}
+ case'tile':{const s=t.dataset.s;
+  if(ui.mode==='rafale'){if(!ui.burst){toast('Choisissez d\'abord un comportement.');return}const id=addEntry(s,ui.burst);ui.flash=s;toast(bl(ui.burst,c.lv)+' · '+sName(s),id);setTimeout(()=>{ui.flash=null},800)}
+  else{ui.sheet=s;ui.sheetSe=null}break}
+ case'rattr':ui.sheet=t.dataset.s;ui.sheetSe=ui.ses;break;
+ case'moreToggle':ev.preventDefault();ui.more=!ui.more;sheet();return;
+ case'log':{const sid=ui.sheet,id=addEntry(sid,t.dataset.b);toast(bl(t.dataset.b,c.lv)+' · '+sName(sid),id);ui.flash=sid;setTimeout(()=>{ui.flash=null},800);close();break}
+ case'pun':{const sid=ui.sheet,id=addEntry(sid,'pun','',{p:t.dataset.p,done:false});toast(punL(t.dataset.p)+' · '+sName(sid),id);close();break}
+ case'note':{const v=$('#note').value.trim();if(!v){$('#note').focus();return}const sid=ui.sheet;$('#note').value='';const id=addEntry(sid,'note',v);toast('Note ajoutée · '+sName(sid),id);close();break}
+ case'del':removeEntry(t.dataset.id);toast('Observation retirée.');break;
+ case'undo':if(ui.undo){removeEntry(ui.undo);ui.undo=null;$('#toast').hidden=true}break;
+ case'close':case'bg':ui.sheet=null;ui.sheetSe=null;break;
+ case'mot':ui.modal={k:'mot',id:t.dataset.id};break;
+ case'mclose':ui.modal=null;break;
+ case'motcopy':try{await navigator.clipboard.writeText($('#motT').value);toast('Mot copié.')}catch(e){$('#motT').select();toast('Texte sélectionné : copiez-le avec le menu du téléphone.')}return;
+ case'pundone':{const e=S.logs.find(x=>x.id===t.dataset.id);if(e){e.done=!e.done;save()}break}
+ case'fiche':ui.stu=t.dataset.s;ui.ses=null;ui.sheet=null;ui.sheetSe=null;ui.view='bilan';scrollTo(0,0);break;
+ case'stu':ui.stu=t.dataset.s;scrollTo(0,0);break;
+ case'ses':ui.ses=t.dataset.id;ui.fromCal=false;ui.confirm=false;scrollTo(0,0);break;
+ case'back':ui.stu=null;ui.ses=null;ui.confirm=false;if(ui.fromCal){ui.bview='cal';ui.fromCal=false}break;
+ case'bview':ui.bview=t.dataset.b;ui.fromCal=false;break;
+ case'calday':ui.calD=t.dataset.d;break;
+ case'calprev':case'calnext':{const m=ui.calM||ymd(Date.now()).slice(0,7);let[Y,M]=m.split('-').map(Number);M+=a==='calnext'?1:-1;if(M<1){M=12;Y--}if(M>12){M=1;Y++}ui.calM=Y+'-'+String(M).padStart(2,'0');ui.calD=null;break}
+ case'caltoday':ui.calM=null;ui.calD=null;break;
+ case'calses':{const x=S.sessions.find(y=>y.id===t.dataset.id);if(x){ui.cur=x.c;ui.ses=x.id;ui.stu=null;ui.fromCal=true;ui.confirm=false;scrollTo(0,0)}break}
+ case'delses':if(!ui.confirm){ui.confirm=true;break}S.logs=S.logs.filter(e=>e.se!==ui.ses);S.sessions=S.sessions.filter(x=>x.id!==ui.ses);ui.ses=null;ui.confirm=false;if(ui.fromCal){ui.bview='cal';ui.fromCal=false}save();toast('Séance supprimée.');break;
+ case'sumcopy':try{await navigator.clipboard.writeText(sesSummary(S.sessions.find(x=>x.id===ui.ses)));toast('Résumé copié.')}catch(e){toast('Copie refusée par l\'appareil.')}return;
+ case'sumshare':try{await navigator.share({title:'Résumé de séance',text:sesSummary(S.sessions.find(x=>x.id===ui.ses))})}catch(e){}return;
+ case'pre':{const k=t.dataset.k;if(k==='all'){ui.from='';ui.to=''}else if(k==='30'){ui.from=ymd(Date.now()-30*864e5);ui.to=''}else{ui.from=yearStart();ui.to=''}save();break}
+ case'draft':{const ta=$('#appr'),l=S.logs.filter(e=>e.c===c.id&&e.s===ui.stu&&inPeriod(e.t)),abs=new Set(l.filter(e=>e.b==='abs').map(e=>e.se)),ns=S.sessions.filter(x=>x.c===c.id&&inPeriod(x.start)&&!abs.has(x.id)).length;
+  ta.value=draft(l,c.lv,ns);saveAppr();$('#aist').textContent='Brouillon généré à partir des observations : ajustez-le librement.';return}
+ case'copy':try{await navigator.clipboard.writeText($('#appr').value);toast('Appréciation copiée.')}catch(e){$('#appr').select();toast('Texte sélectionné : copiez-le avec le menu du téléphone.')}return;
+ case'newcls':ui.view='classes';ui.edit='new';ui.confirm=false;break;
+ case'editcls':ui.view='classes';ui.edit=t.dataset.id;ui.confirm=false;break;
+ case'cancel':ui.edit=null;ui.confirm=false;break;
+ case'col':{const i=$('#ccol');if(i)i.value=t.dataset.c;document.querySelectorAll('.sw').forEach(b=>b.setAttribute('aria-pressed',b===t));setColor({col:t.dataset.c});return}
+ case'xlpick':$('#xlIn').value='';$('#xlIn').click();return;
+ case'savecls':saveClass();return;
+ case'delcls':if(!ui.confirm){ui.confirm=true;break}delClass();return;
+ case'star':{const b=ui.behEdit[+t.dataset.i];if(b)b.f=!b.f;break}
+ case'behadd':ui.behEdit.push({id:uid(),l:'',v:1,ap:'',ax:'att'});sched(true);setTimeout(()=>{const x=document.querySelectorAll('.behrow input[data-f=l]');x[x.length-1]&&x[x.length-1].focus()},0);return;
+ case'behdel':ui.behEdit.splice(+t.dataset.i,1);break;
+ case'behreset':ui.behEdit=(DEFL()[ui.behLv]||DEFL().autre).map(b=>({...b}));break;
+ case'behsave':S.lists[ui.behLv]=ui.behEdit.filter(b=>String(b.l).trim()).map(b=>({...b,l:String(b.l).trim()}));ui.behEdit=null;save();toast('Liste '+lvName(ui.behLv)+' enregistrée.');break;
+ case'punadd':ui.punEdit.push({id:uid(),l:''});sched(true);return;
+ case'pundel':ui.punEdit.splice(+t.dataset.i,1);break;
+ case'punreset':ui.punEdit=PUNDEF.map(x=>({...x}));break;
+ case'punsave':S.pun=ui.punEdit.filter(x=>String(x.l).trim()).map(x=>({...x,l:String(x.l).trim()}));ui.punEdit=null;save();toast('Punitions enregistrées.');break;
+ case'pinoff':delete S.prefs.pin;await idb.del('pin');save();toast('Code désactivé : le mot de passe sera demandé.');break;
+ case'yearwipe':if(ui.yearStep!==1){ui.yearStep=1;break}S.logs=[];S.sessions=[];S.notes={};ui.yearStep=0;save();toast('Données de l\'année effacées.');break;
+ case'yearcancel':ui.yearStep=0;break;
+ case'backup':backup();return;
+ case'filelink':linkFile();return;
+ case'fileperm':try{fileOK=(await fileH.requestPermission({mode:'readwrite'}))==='granted';if(fileOK)await doSave()}catch(e){fileOK=false}break;
+ case'imppick':$('#fileIn').value='';$('#fileIn').click();return;
+ case'csv':await giveFile('carnet-svt-'+ymd(Date.now())+'.csv','﻿'+csv(),'text/csv');return;
+ }
+ sched(true)});
+$('#xlIn').addEventListener('change',async()=>{const f=$('#xlIn').files[0];if(!f)return;const st=$('#xlst');
+ try{const names=rowsToNames(await readRows(f));if(!names.length)throw 0;$('#cs').value=names.join('\n');if(st)st.textContent=names.length+' élèves importés depuis '+f.name;toast(names.length+' élèves importés : vérifiez puis enregistrez.')}
+ catch(e){if(st)st.textContent='Lecture impossible : enregistrez le fichier en .xlsx, .ods ou .csv.';toast('Fichier illisible.')}});
+$('#fileIn').addEventListener('change',async()=>{const f=$('#fileIn').files[0];if(!f)return;
+ try{const rec=JSON.parse(await f.text());if(!rec||rec.app!=='carnet-svt'||!rec.ct)throw 0;
+  if(S){clearTimeout(saveT);await doSave()}pendingImport=rec;K=null;S=null;ui.err='';ui.auth=(await idb.get('vault'))?'login':'setup';render(true);
+  toast('Saisissez les identifiants de la sauvegarde pour la restaurer.')}
+ catch(e){toast('Ce fichier n\'est pas une sauvegarde du Carnet SVT.')}});
+document.addEventListener('input',ev=>{const t=ev.target;if(!S)return;
+ if(t.id==='appr'){clearTimeout(apT);apT=setTimeout(saveAppr,600)}
+ else if(t.dataset.pf&&ui.punEdit){const x=ui.punEdit[+t.dataset.i];if(x)x.l=t.value}
+ else if(t.dataset.f&&ui.behEdit){const b=ui.behEdit[+t.dataset.i];if(!b)return;const f=t.dataset.f;
+  if(f==='type'){if(t.value==='c'){b.ax='comp';b.v=1;b.cp=b.cp||'dem'}else{b.ax='att';b.v=+t.value;delete b.cp}sched(true)}else if(f==='cp')b.cp=t.value;else b[f]=t.value}});
+document.addEventListener('change',ev=>{const t=ev.target;if(!S)return;
+ if(t.id==='from'||t.id==='to'){ui[t.id]=t.value;save();sched(true)}
+ else if(t.id==='blv'){ui.behLv=t.value;ui.behEdit=null;sched(true)}
+ else if(t.id==='ccol'){document.querySelectorAll('.sw').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===t.value));setColor({col:t.value})}
+ else if(t.id==='autoClose'||t.id==='vib'){S.prefs[t.id]=t.checked;save()}
+ else if(t.id==='prof'){S.prefs.prof=t.value.trim();save()}
+ else if(t.id==='snote'&&ui.ses){const x=S.sessions.find(y=>y.id===ui.ses);if(x){x.note=t.value.trim();save();sched(true)}}
+ else if((t.id==='ss'||t.id==='se')&&ui.ses){const x=S.sessions.find(y=>y.id===ui.ses);if(!x)return;const v=atTime(x.start,t.value);
+  if(t.id==='ss'&&v)x.start=v;else if(t.id==='se')x.end=v&&v>x.start?v:(t.value?x.end:null);save();sched(true)}});
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){if(ui.modal){ui.modal=null;sched(true)}else if(ui.sheet){ui.sheet=null;ui.sheetSe=null;sched(true)}}if(ev.key==='Enter'&&ev.target.id==='note'){ev.preventDefault();$('[data-act=note]').click()}});
+
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+(async()=>{try{META=(await idb.get('meta'))||{};fileH=(await idb.get('fileH'))||null;ui.auth=(await idb.get('vault'))?((await pinValid())?'pin':'login'):'setup'}catch(e){ui.auth='setup'}render(true)})();
+}
+</script>
+</body>
+</html>

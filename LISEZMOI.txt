@@ -1,0 +1,65 @@
+CARNET SVT, VERSION 3 : INSTALLATION ET UTILISATION
+===================================================
+
+L'application tient dans ce dossier : index.html, sw.js, manifest.webmanifest et 3 icônes.
+Elle fonctionne sans Claude, sans compte et sans réseau. Vos données restent sur le téléphone,
+chiffrées. L'application est verrouillée techniquement contre tout envoi sur Internet.
+
+1. METTRE L'APPLICATION EN LIGNE (une seule fois, gratuit)
+   Exemple avec GitHub Pages :
+   - Créez un compte sur github.com et activez la double authentification (Settings > Password
+     and authentication). C'est important : c'est elle qui protège le code de l'application.
+   - Créez un dépôt « carnet-svt » (bouton New repository).
+   - Dans le dépôt : « Add file » > « Upload files ». Déposez les 6 fichiers de l'application,
+     puis « Commit changes ».
+   - Dans Settings > Pages : Source « Deploy from a branch », branche « main », dossier « / (root) ».
+   - Au bout d'une minute environ, l'adresse s'affiche : https://votre-nom.github.io/carnet-svt/
+   Le serveur ne fournit que l'application, qui est vide. Il ne reçoit jamais vos élèves.
+
+2. INSTALLER SUR LE TÉLÉPHONE
+   - Android (Chrome) : ouvrez l'adresse, puis menu ⋮ > « Ajouter à l'écran d'accueil » ou « Installer ».
+   - iPhone (Safari) : Partager > « Sur l'écran d'accueil ».
+   Ouvrez toujours le carnet depuis cette icône.
+
+3. PREMIÈRE OUVERTURE
+   - Créez votre identifiant et votre mot de passe (8 caractères minimum, sans possibilité
+     de récupération).
+   - Réglages > Déverrouillage rapide : choisissez un code de 4 à 8 chiffres. Le mot de passe
+     est demandé une fois le matin, puis le code suffit jusqu'à minuit.
+   - Classes > Nouvelle classe : nom, niveau et couleur, puis « Importer un fichier Excel ou
+     LibreOffice » (.xlsx, .ods ou .csv, avec une colonne Nom et une colonne Prénom).
+
+4. EN CLASSE
+   - « Démarrer la séance avec la classe … » lance le chronomètre. Il reste visible en haut
+     de l'écran ; touchez-le pour revenir à la séance.
+   - Plan de classe : 3 rangs de 6 places, un couloir, puis 4 places. « Modifier le plan »
+     permet de faire glisser les étiquettes (deux élèves sont échangés si la place est prise).
+     « Vue depuis le bureau » retourne le plan. Pour voir toute la salle, tournez le téléphone
+     à l'horizontale.
+   - Touchez un élève, puis un favori : la fiche se ferme seule (deux gestes). Les autres
+     comportements, les punitions et la note libre sont sous « Tous les comportements ».
+   - Rafale : choisissez un comportement, puis touchez tous les élèves concernés.
+   - « Terminer la séance » affiche le rattrapage (les élèves sans observation, avec l'heure
+     modifiable) et le résumé à copier.
+
+5. BILAN ET CALENDRIER
+   - Bilan > Classe : tableau de la classe, punitions à vérifier, attention équitable, séances,
+     fiche élève (compétences SVT, attitudes, brouillon d'appréciation).
+   - Bilan > Calendrier : chaque jour avec séance est marqué d'une pastille à la couleur de la
+     classe. Touchez un jour, puis une séance, pour la consulter.
+
+6. SAUVEGARDES
+   Réglages > « Enregistrer une sauvegarde » crée un fichier .carnet chiffré. Rangez-le dans
+   Fichiers ou sur un Drive. Un rappel s'affiche au-delà de 7 jours sans sauvegarde.
+   Pour changer de téléphone : « Restaurer une sauvegarde », puis vos identifiants.
+   L'export CSV n'est PAS chiffré : supprimez-le après usage.
+
+7. FIN D'ANNÉE
+   Réglages > Fin d'année scolaire > « Effacer les données de l'année ». Les classes, les plans
+   et les listes sont conservés.
+
+8. METTRE À JOUR L'APPLICATION
+   Remplacez index.html et sw.js dans le dépôt GitHub. Vos données sur le téléphone sont
+   conservées.
+   Si vous aviez modifié une liste de comportements, touchez « Liste d'origine » pour
+   récupérer les nouveaux éléments.
