@@ -1,4 +1,4 @@
-CARNET SVT, VERSION 5 : INSTALLATION ET UTILISATION
+CARNET SVT, VERSION 6 : INSTALLATION ET UTILISATION
 ===================================================
 
 L'application tient dans ce dossier : index.html, sw.js, manifest.webmanifest et 3 icônes.
@@ -30,7 +30,7 @@ chiffrées. L'application est verrouillée techniquement contre tout envoi sur I
      ou LibreOffice ». Il faut un fichier .xlsx, .ods ou .csv avec une colonne Nom et une colonne
      Prénom. Tous les fichiers du téléphone sont proposés. Depuis Google Sheets, faites
      d'abord « Télécharger > Microsoft Excel ». L'ancien format .xls n'est pas lu.
-   - Réglages : menu Affichage (thème clair, sombre ou automatique), Compte et sécurité
+   - Réglages : menu Affichage (thème clair, sombre ou automatique ; grand texte), Compte et sécurité
      (identifiant, mot de passe, code du jour), En classe, Classes, Comportements, Punitions,
      Sauvegarde et export, Fin d'année.
 
@@ -41,44 +41,70 @@ chiffrées. L'application est verrouillée techniquement contre tout envoi sur I
      « Reprendre la séance » ou le chronomètre en haut de l'écran y ramènent.
    - Barre du bas : Accueil, Séance, Calendrier, Bilan, Réglages.
 
-5. EN CLASSE
+5. EMPLOI DU TEMPS
+   - Réglages > Emploi du temps : ajoutez vos créneaux (jour, horaires, classe, semaine A, B
+     ou toutes). Indiquez si la semaine en cours est une semaine A ou B ; vérifiez-le après
+     les vacances.
+   - L'accueil affiche « Prochain cours » (ou « Cours en ce moment ») avec un bouton Démarrer,
+     ainsi que l'emploi du temps du jour. Si vous oubliez de terminer la séance, l'heure de
+     fin du créneau est enregistrée automatiquement.
+   - Une séance ponctuelle reste toujours possible avec « Autre séance ».
+
+6. EN CLASSE
    - « Démarrer la séance avec la classe … » lance le chronomètre. Il reste visible en haut
      de l'écran ; touchez-le pour revenir à la séance.
    - Plan de classe : 3 rangs de 6 places, un couloir, puis 4 places. « Modifier le plan »
      permet de faire glisser les étiquettes (deux élèves sont échangés si la place est prise).
      « Vue depuis le bureau » retourne le plan. Pour voir toute la salle, tournez le téléphone
      à l'horizontale.
+   - Appui long sur un élève (une demi-seconde) : le comportement rapide est noté
+     immédiatement, avec une vibration. Choisissez-le par niveau dans Réglages > En classe.
+   - Pendant une séance, l'en-tête se réduit à une ligne pour laisser plus de place au plan.
+   - « Toute la salle » affiche les 30 places sans défilement ; « Grandes étiquettes » montre
+     le prénom et le nom en plus grand (défilement sur le côté).
+   - Une case entourée de rouge signale un comportement inapproprié ou une punition pendant
+     la séance.
    - Touchez un élève, puis un favori : la fiche se ferme seule (deux gestes). Les autres
      comportements, les punitions et la note libre sont sous « Tous les comportements ».
    - Rafale : choisissez un comportement, puis touchez tous les élèves concernés.
    - « Terminer la séance » affiche le rattrapage (les élèves sans observation, avec l'heure
      modifiable) et le résumé à copier.
 
-6. CALENDRIER ET BILAN
+7. CALENDRIER ET BILAN
    - Calendrier : touchez une date pour voir ses séances, puis une séance pour l'afficher.
      Vous pouvez y modifier la date, les horaires et la remarque, ajouter ou retirer des
      observations, ou supprimer la séance.
    - Séances d'une classe : bouton « Séances » sur la carte de la classe (accueil), ou
      « Toutes les séances » dans le Bilan. Les séances sont classées par mois ; touchez-en une
      pour la consulter, la modifier ou la supprimer.
-   - Contenu pédagogique : chaque séance a un espace de note (séquence, activités, notions,
-     travail donné). Il est accessible pendant la séance (« Contenu pédagogique de la
+   - Contenu pédagogique : chaque séance a sa séquence (numérotée automatiquement :
+     « SQ2 – séance 3 »), son contenu, un « reste à faire » et un éventuel travail à rendre.
+     À la séance suivante, le reste à faire est rappelé (bouton « Reprendre dans le
+     contenu »). Si un travail à rendre a été coché, la carte « Travail à rendre >
+     Vérifier » permet de pointer Rendu / Non rendu, puis de noter « Travail non fait ». Il est accessible pendant la séance (« Contenu pédagogique de la
      séance », sous le chronomètre) et dans la fiche de la séance. Il est repris dans le
      résumé, dans la liste des séances et dans l'export CSV.
-   - Bilan : tableau de la classe, punitions à vérifier, attention équitable, séances,
-     fiche élève (compétences SVT, attitudes, brouillon d'appréciation).
+   - Bilan : tableau de la classe, graphiques (évolution séance par séance, compétences SVT
+     observées), punitions à vérifier, attention équitable, fiche élève.
+   - « Appréciations de la classe » : tous les élèves sur une page, brouillons générés pour
+     ceux qui n'en ont pas, copie de l'ensemble pour Pronote.
+   - « Fiches PDF de la classe » (une page par élève) ou « Fiche PDF » depuis la fiche d'un
+     élève : compétences, attitudes, assiduité, punitions et appréciation, sans les notes
+     libres. Pratique pour le conseil de classe ou une rencontre avec les parents.
 
-7. SAUVEGARDES
+8. SAUVEGARDES
    Réglages > Sauvegarde et export > « Enregistrer une sauvegarde » crée un fichier .carnet chiffré. Rangez-le dans
    Fichiers ou sur un Drive. Un rappel s'affiche au-delà de 7 jours sans sauvegarde.
    Pour changer de téléphone : « Restaurer une sauvegarde », puis vos identifiants.
+   Carnet déjà ouvert : Réglages > Sauvegarde et export > Restaurer propose « Fusionner »
+   (ajoute seulement ce qui manque, rien n'est effacé) ou « Remplacer ».
    L'export CSV n'est PAS chiffré : supprimez-le après usage.
 
-8. FIN D'ANNÉE
+9. FIN D'ANNÉE
    Réglages > Fin d'année > « Effacer les données de l'année ». Les classes, les plans
    et les listes sont conservés.
 
-9. METTRE À JOUR L'APPLICATION
+10. METTRE À JOUR L'APPLICATION
    Remplacez index.html et sw.js dans le dépôt GitHub. Vos données sur le téléphone sont
    conservées.
    Si vous aviez modifié une liste de comportements, touchez « Liste d'origine » pour
